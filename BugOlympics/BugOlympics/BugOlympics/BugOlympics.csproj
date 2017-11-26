@@ -69,6 +69,8 @@
     <TypeScriptSourceRoot />
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="require.js" />
+    <Content Include="tsconfig.json" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -94,6 +96,7 @@
   <ItemGroup>
     <TypeScriptCompile Include="app.ts" />
     <TypeScriptCompile Include="ChargeMeter.ts" />
+    <TypeScriptCompile Include="EventOne.ts" />
     <TypeScriptCompile Include="GameScene.ts" />
     <TypeScriptCompile Include="IRenderable.ts" />
     <TypeScriptCompile Include="IUpdatable.ts" />

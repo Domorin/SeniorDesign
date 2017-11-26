@@ -5,13 +5,17 @@
     <meta charset="utf-8" />
     <title>TypeScript HTML App</title>
     <link rel="stylesheet" href="app.css" type="text/css" />
-    <script> var exports = {}; </script>
     <script src="/phaser.min.js"></script>
-    <script src="/app.js"></script>
+    <script src="/require.js"></script>
+    <script src="/main.js"></script>
+    <script>
+        window.onload = () => {
+            require(['EventOne'], function (EventOneClass) {
+                var scene = new EventOneClass.EventOne();
+            });
+        };
+    </script>
 </head>
 <body>
-    <h1>TypeScript HTML App</h1>
-
-    <div id="content"></div>
 </body>
 </html>
