@@ -1,0 +1,7 @@
+C:\Users\codyd\Desktop\BugOlympics\BugOlympics\BugOlympics\bin\TypeScriptHTMLApp1.dll.config
+C:\Users\codyd\Desktop\BugOlympics\BugOlympics\BugOlympics\bin\TypeScriptHTMLApp1.dll
+C:\Users\codyd\Desktop\BugOlympics\BugOlympics\BugOlympics\bin\TypeScriptHTMLApp1.pdb
+C:\Users\codyd\Desktop\BugOlympics\BugOlympics\BugOlympics\obj\Debug\BugOlympics.csproj.CoreCompileInputs.cache
+C:\Users\codyd\Desktop\BugOlympics\BugOlympics\BugOlympics\obj\Debug\TypeScriptHTMLApp1.dll
+C:\Users\codyd\Desktop\BugOlympics\BugOlympics\BugOlympics\obj\Debug\TypeScriptHTMLApp1.pdb
+C:\Users\codyd\Desktop\BugOlympics\BugOlympics\BugOlympics\obj\Debug\BugOlympics.csprojResolveAssemblyReference.cache
