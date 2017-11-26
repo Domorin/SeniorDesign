@@ -21,7 +21,7 @@ export class EventOne implements GameScene {
     }
 
     preload() {
-
+        this.game.load.image('pillarTile', 'content/pillarTile.png');
         this.game.load.image('sky', 'content/sky.png');
         this.game.load.image('ground', 'content/platform.png');
         this.game.load.image('star', 'content/star.png');
@@ -35,6 +35,9 @@ export class EventOne implements GameScene {
 
         this.worldDimensions = new Phaser.Point(2400, 600);
 
+        var pillarTileHeight = this.game.cache.getImage("pillarTile").height;
+
+
 
         //  A simple background for our game
         var backgroundWidth = this.game.cache.getImage("sky").width
@@ -43,6 +46,15 @@ export class EventOne implements GameScene {
         for (var x = 0; x < this.worldDimensions.x; x += backgroundWidth) {
             this.game.add.sprite(x, 0, 'sky');
         }
+
+        var pillarLocationX = 800;
+        var pillarHoleSize = 100;
+        var pillarHoleY = 300;
+        for (var curHeight = 0; curHeight < this.worldDimensions.y; curHeight += pillarTileHeight) {
+            // Add hole!
+            this.game.add.sprite(pillarLocationX, curHeight, 'pillarTile');
+        }
+
         //  The platforms group contains the ground and the 2 ledges we can jump on
         this.collisionObjects = this.game.add.group();
 
@@ -57,19 +69,6 @@ export class EventOne implements GameScene {
 
         //  Set the immovable property for all objects in the platforms group.
         this.collisionObjects.setAll('body.immovable', true);
-
-        var pillarTileHeight = this.game.cache.getImage("pillarTile").height;
-
-        var pillarLocationX = 800;
-        var pillarHoleSize = 100;
-        var pillarHoleY = 300;
-        for (var curHeight = 0; curHeight < this.worldDimensions.y; curHeight += pillarTileHeight) {
-            // Add hole!
-            this.game.add.sprite(pillarLocationX, curHeight, 'pillarTile');
-        }
-
-
-
 
         var playerSprite = this.game.add.sprite(150, this.game.world.height - 250, 'dude');        
         //  We need to enable physics on the player
