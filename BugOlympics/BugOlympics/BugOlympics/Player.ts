@@ -1,4 +1,5 @@
 ﻿import { ChargeMeter } from './chargeMeter';
+import { EventOne } from "./EventOne";
 
 export class Player implements IUpdatable, IRenderable {
 
@@ -30,17 +31,29 @@ export class Player implements IUpdatable, IRenderable {
     pointer: Phaser.Pointer;
     chargeMeter: ChargeMeter;
     beingDragged: boolean = false;
+    onGround: boolean = true;
 
 
     update(scene: GameScene) {
-        var game: Phaser.Game = scene.game;        
+        var myScene: EventOne = scene as EventOne;
+        
 
-        //  Collide the player with the platforms
-        var hitPlatform = game.physics.arcade.collide(this.sprite, scene.collisionObjects);
+        //  Collide the player with the platforms and pillars
+        var hitPlatform: boolean = myScene.game.physics.arcade.collide(this.sprite, myScene.ground);
+        var hitPillar: boolean = myScene.game.physics.arcade.collide(this.sprite, myScene.pillars);
+        if (hitPillar) {
+            this.sprite.position.x = myScene.spawnPoint.x;
+            this.sprite.position.y = myScene.spawnPoint.y;
+            this.sprite.body.velocity.x = 0;
+            this.sprite.body.velocity.y = 0;
+        }        
 
         // If players feet are touching the floor, set X velocity to 0
-        if (this.sprite.body.touching.down) {
+        if (hitPlatform) {
             this.sprite.body.velocity.x = 0;
+            this.onGround = true;
+        } else {
+            this.onGround = false;
         }
 
         this.chargeMeter.update(scene);

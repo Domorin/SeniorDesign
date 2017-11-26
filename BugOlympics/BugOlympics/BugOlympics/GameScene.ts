@@ -1,6 +1,6 @@
 ﻿interface GameScene {
 
-    collisionObjects: Phaser.Group;
+    ground: Phaser.Group;
     activePointer: Phaser.Pointer;
     game: Phaser.Game;
 
