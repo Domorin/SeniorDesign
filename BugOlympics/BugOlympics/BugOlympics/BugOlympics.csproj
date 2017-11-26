@@ -69,6 +69,7 @@
     <TypeScriptSourceRoot />
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="content\pillarTile.png" />
     <Content Include="require.js" />
     <Content Include="tsconfig.json" />
     <None Include="Web.Debug.config">
