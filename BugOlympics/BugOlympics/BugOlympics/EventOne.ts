@@ -29,6 +29,9 @@ export class EventOne implements GameScene {
 
     numberOfScreens: number;
 
+    cameraMoving: boolean;
+    cameraMoveSpeed: number;
+
     constructor() {
         this.game = new Phaser.Game(1024, 768, Phaser.AUTO, 'content', this);
     }
@@ -102,8 +105,9 @@ export class EventOne implements GameScene {
         this.game.physics.arcade.enable(playerSprite);
         this.player = new Player(playerSprite);
 
-        this.game.camera.follow(playerSprite);
         this.game.camera.bounds = new Phaser.Rectangle(0, 0, this.worldDimensions.x, this.worldDimensions.y);
+        this.cameraMoving = false;
+        this.cameraMoveSpeed = 20;
         
         this.graphics = this.game.add.graphics(0, 0);
 
@@ -115,7 +119,7 @@ export class EventOne implements GameScene {
         for (var i = 0; i < this.numberOfScreens-1; i++) {
             var x = this.randomIntFromInterval(this.pillarMinSpawnX, this.pillarMaxSpawnX) + (i * this.game.width);
             var holeY = this.randomIntFromInterval(this.pillarMinHoleY, this.pillarMaxHoleY);
-            var holeSize = this.randomIntFromInterval(this.pillarMinHoleY, this.pillarMaxHoleY);
+            var holeSize = this.randomIntFromInterval(this.pillarMinHoleSize, this.pillarMaxHoleSize);
             console.log("Creating Pillar:")
             console.log("X: ", x);
             console.log("Hole Y:", holeY);
@@ -139,9 +143,25 @@ export class EventOne implements GameScene {
         return Math.floor(Math.random() * (max - min + 1) + min);
     }
 
+    // Update everything in the scene
     update() {
-        this.activePointer = this.game.input.activePointer;
+        this.activePointer = this.game.input.activePointer;        
         this.player.update(this);
+
+        var playerScreenLocation = Math.floor(this.player.sprite.position.x / this.game.width);
+        var desiredCameraLocation = playerScreenLocation * this.game.width;
+        if (this.game.camera.position.x != desiredCameraLocation) {
+            this.cameraMoving = true;
+        }
+
+        // Need to handle if player goes back/respawning camera!
+        if (this.cameraMoving) {
+            this.game.camera.setPosition(this.game.camera.position.x + this.cameraMoveSpeed, 0);
+            if (this.game.camera.position.x >= desiredCameraLocation) {
+                this.game.camera.setPosition(desiredCameraLocation, 0);
+                this.cameraMoving = false;
+            }
+        }
     }
 
     render() {
