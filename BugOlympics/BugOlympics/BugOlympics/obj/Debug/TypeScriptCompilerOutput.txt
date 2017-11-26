@@ -36,5 +36,3 @@ C:\Users\codyd\Desktop\SeniorDesign\BugOlympics\BugOlympics\BugOlympics\main.js
 C:\Users\codyd\Desktop\SeniorDesign\BugOlympics\BugOlympics\BugOlympics\main.js.map
 C:\Users\codyd\Desktop\SeniorDesign\BugOlympics\BugOlympics\BugOlympics\main.js
 C:\Users\codyd\Desktop\SeniorDesign\BugOlympics\BugOlympics\BugOlympics\main.js.map
-C:\Users\codyd\Desktop\SeniorDesign\BugOlympics\BugOlympics\BugOlympics\main.js
-C:\Users\codyd\Desktop\SeniorDesign\BugOlympics\BugOlympics\BugOlympics\main.js.map

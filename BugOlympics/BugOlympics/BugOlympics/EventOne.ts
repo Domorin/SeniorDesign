@@ -4,19 +4,19 @@ import { Player } from "./Player";
 
 export class EventOne implements GameScene {
 
-    constructor() {
-        console.log("HELLO!!");
-        this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'content', { preload: this.preload, create: this.create, update: this.update, render: this.render });
-    }
 
+    camera: Phaser.Camera;
     game: Phaser.Game;
     graphics: Phaser.Graphics;
     collisionObjects: Phaser.Group;
-
     player: Player;
-    pointer: Phaser.Pointer;
+    activePointer: Phaser.Pointer;
 
-    playerBeingDragged: boolean = false;
+
+    constructor() {
+        console.log("HELLO!!");
+        this.game = new Phaser.Game(800, 600, Phaser.CANVAS, 'content', { preload: this.preload, create: this.create, update: this.update, render: this.render });
+    }
 
     preload() {
 
@@ -33,6 +33,7 @@ export class EventOne implements GameScene {
 
         //  A simple background for our game
         this.game.add.sprite(0, 0, 'sky');
+        
 
         //  The platforms group contains the ground and the 2 ledges we can jump on
         this.collisionObjects = this.game.add.group();
@@ -55,14 +56,21 @@ export class EventOne implements GameScene {
         this.collisionObjects.setAll('body.immovable', true);
 
         var playerSprite = this.game.add.sprite(150, this.game.world.height - 250, 'dude');
-        this.player = new Player(playerSprite);        
         //  We need to enable physics on the player
-        this.game.physics.arcade.enable(playerSprite);      
+        this.game.physics.arcade.enable(playerSprite);
+        this.player = new Player(playerSprite);
 
-        this.graphics = this.game.add.graphics(0, 0);        
+        this.game.camera.follow(playerSprite);
+        this.game.camera.bounds = null;
+        
+        this.graphics = this.game.add.graphics(0, 0);
+
+
     }
 
     update() {
+        this.activePointer = this.game.input.activePointer;
+        console.log(this.activePointer.position.x, this.activePointer.screenX);
         this.player.update(this);
     }
 

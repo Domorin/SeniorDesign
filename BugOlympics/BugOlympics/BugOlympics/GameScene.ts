@@ -1,6 +1,7 @@
 ﻿interface GameScene {
 
     collisionObjects: Phaser.Group;
+    activePointer: Phaser.Pointer;
     game: Phaser.Game;
 
     preload: () => void

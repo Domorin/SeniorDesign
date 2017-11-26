@@ -5,6 +5,7 @@ export class Player implements IUpdatable, IRenderable {
     constructor(sprite: Phaser.Sprite) {
         console.log("Creating player!");
         this.sprite = sprite;
+        console.log(this.sprite.body);
         this.sprite.body.bounce.y = 0.2;
         this.sprite.body.gravity.y = 300;
         this.sprite.body.collideWorldBounds = true;
