@@ -8,7 +8,7 @@ export class Player implements IUpdatable, IRenderable {
         this.sprite = sprite;
         this.sprite.body.bounce.y = 0.2;
         this.sprite.body.gravity.y = 300;
-        this.sprite.body.collideWorldBounds = false;
+        this.sprite.body.collideWorldBounds = true;
         this.sprite.body.stopVelocityOnCollide = true;
 
         this.sprite.inputEnabled = true;
@@ -21,7 +21,7 @@ export class Player implements IUpdatable, IRenderable {
     }
 
     // Constants
-    VELOCITY_MODIFIER: number = 4;
+    VELOCITY_MODIFIER: number = 5;
     MAX_DRAG_DISTANCE: number = 125;
     GRAVITY: number = 300;
     RECT_WIDTH: number = 7;
@@ -33,10 +33,21 @@ export class Player implements IUpdatable, IRenderable {
     beingDragged: boolean = false;
     onGround: boolean = true;
 
+    currentScreen: number = 0;
+    changedScreens: boolean = false;
+
 
     update(scene: GameScene) {
         var myScene: EventOne = scene as EventOne;
-        
+
+        var prevScreen = this.currentScreen;
+        this.currentScreen = Math.floor(this.sprite.position.x / myScene.game.width);
+        if (prevScreen != this.currentScreen) {
+            this.changedScreens = true;            
+        } else {
+            this.changedScreens = false;
+        }
+
 
         //  Collide the player with the platforms and pillars
         var hitPlatform: boolean = myScene.game.physics.arcade.collide(this.sprite, myScene.ground);
@@ -55,13 +66,19 @@ export class Player implements IUpdatable, IRenderable {
         } else {
             this.onGround = false;
         }
-
-        this.chargeMeter.update(scene);
-        
+        // Don't allow any charging if camera is moving
+        if (!myScene.cameraMoving) {
+            this.sprite.body.enable = true;
+            this.chargeMeter.update(scene);
+        } else { // Disable movement if camera is moving
+            this.sprite.body.enable = false;
+        }
     }
 
     playerClicked(s) {
-        this.beingDragged = true;
+        if (this.onGround) {
+            this.beingDragged = true;
+        }
     }
 
     render(graphics: Phaser.Graphics) {

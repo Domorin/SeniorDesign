@@ -9,8 +9,12 @@ export class EventOne implements GameScene {
     game: Phaser.Game;
     graphics: Phaser.Graphics;
     ground: Phaser.Group;
+    groundHeight: number;
     player: Player;
     activePointer: Phaser.Pointer;
+
+    score: Phaser.Text;
+
 
     worldDimensions: Phaser.Point;
 
@@ -55,13 +59,14 @@ export class EventOne implements GameScene {
         this.pillarMinHoleY = 150
         this.pillarMaxHoleY = this.game.height - this.pillarMaxHoleSize - 40;
 
-        this.numberOfScreens = 4;
+        this.numberOfScreens = 30;
 
 
         //  Use Arcade Physics
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
         this.worldDimensions = new Phaser.Point(this.game.width * (this.numberOfScreens), this.game.height);
+        this.game.world.setBounds(0, 0, this.worldDimensions.x, this.worldDimensions.y);
 
         var pillarTileHeight = this.game.cache.getImage("pillarTile").height;
 
@@ -80,8 +85,7 @@ export class EventOne implements GameScene {
 
         this.pillars.enableBody = true;
         this.createPillars(this.game.cache.getImage("pillarTile").height);
-        this.pillars.setAll('body.immovable', true);
-        
+        this.pillars.setAll('body.immovable', true);        
 
         //  The platforms group contains the ground and the 2 ledges we can jump on
         this.ground = this.game.add.group();
@@ -100,7 +104,7 @@ export class EventOne implements GameScene {
 
         this.spawnPoint = new Phaser.Point(150, this.game.world.height - 128 - this.game.cache.getImage('dude').height - 5);
 
-        var playerSprite = this.game.add.sprite(150, this.spawnPoint.y, 'dude');        
+        var playerSprite = this.game.add.sprite(150, this.spawnPoint.y, 'dude', 8); 
         //  We need to enable physics on the player
         this.game.physics.arcade.enable(playerSprite);
         this.player = new Player(playerSprite);
@@ -111,6 +115,9 @@ export class EventOne implements GameScene {
         
         this.graphics = this.game.add.graphics(0, 0);
 
+        var style = { font: "bold 20px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
+        this.score = this.game.add.text(this.game.width - 55, 5, "1/" + this.numberOfScreens, style);
+        this.score.fixedToCamera = true;
 
     }
 
@@ -148,25 +155,35 @@ export class EventOne implements GameScene {
         this.activePointer = this.game.input.activePointer;        
         this.player.update(this);
 
-        var playerScreenLocation = Math.floor(this.player.sprite.position.x / this.game.width);
+        var playerScreenLocation = this.player.currentScreen;
         var desiredCameraLocation = playerScreenLocation * this.game.width;
-        if (this.game.camera.position.x != desiredCameraLocation) {
+        if (this.player.changedScreens) {
             this.cameraMoving = true;
         }
 
         // Need to handle if player goes back/respawning camera!
         if (this.cameraMoving) {
             this.game.camera.setPosition(this.game.camera.position.x + this.cameraMoveSpeed, 0);
+            this.score.text = "" + (Math.floor(Math.random() * 10)) + "/" + this.numberOfScreens;
+            if (this.player.currentScreen >= 9) {
+                this.score.text = (Math.floor(Math.random() * 10)) + this.score.text;
+            }
+            console.log(this.score.text);
+            // Camera transition complete
             if (this.game.camera.position.x >= desiredCameraLocation) {
+                this.game.world.setBounds(desiredCameraLocation, 0, this.worldDimensions.x, this.worldDimensions.y);
+                this.spawnPoint.add(this.game.width, 0);
                 this.game.camera.setPosition(desiredCameraLocation, 0);
                 this.cameraMoving = false;
+
+                this.score.text = this.player.currentScreen + 1 + "/" + this.numberOfScreens;
             }
         }
     }
 
     render() {
         this.graphics.clear()
-        this.player.render(this.graphics);        
+        this.player.render(this.graphics);
 }
 
 }

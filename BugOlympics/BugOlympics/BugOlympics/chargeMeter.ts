@@ -1,4 +1,5 @@
 ﻿import { Player } from "./Player";
+import { EventOne } from "./EventOne";
 
 export class ChargeMeter implements IUpdatable, IRenderable {    
 
@@ -15,7 +16,9 @@ export class ChargeMeter implements IUpdatable, IRenderable {
     player: Player;
 
     update(scene: GameScene) {
-        var pointer: Phaser.Pointer = scene.activePointer;
+        var myScene: EventOne = scene as EventOne;
+
+        var pointer: Phaser.Pointer = myScene.activePointer;
         if (this.player.beingDragged) {
             // Calculate distance between player and pointer
             var dragDistance = Math.sqrt((pointer.worldY - this.player.sprite.body.center.y) ** 2 + (pointer.worldX - this.player.sprite.body.center.x) ** 2);
