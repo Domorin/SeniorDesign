@@ -96,15 +96,15 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="app.ts" />
-    <TypeScriptCompile Include="ChargeMeter.ts" />
-    <TypeScriptCompile Include="EventOne.ts" />
+    <TypeScriptCompile Include="Event1\ChargeMeter.ts" />
+    <TypeScriptCompile Include="Event1\EventOne.ts" />
     <TypeScriptCompile Include="GameScene.ts" />
     <TypeScriptCompile Include="IRenderable.ts" />
     <TypeScriptCompile Include="IUpdatable.ts" />
     <TypeScriptCompile Include="p2.d.ts" />
     <TypeScriptCompile Include="phaser.d.ts" />
     <TypeScriptCompile Include="pixi.d.ts" />
-    <TypeScriptCompile Include="Player.ts" />
+    <TypeScriptCompile Include="Event1\Player.ts" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />

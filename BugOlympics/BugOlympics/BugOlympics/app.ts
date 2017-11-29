@@ -1,4 +1,4 @@
-﻿import { EventOne } from "./EventOne";
+﻿import { EventOne } from "Event1/EventOne";
 
 window.onload = () => {
     console.log("ON LOADING!");
