@@ -1,0 +1,21 @@
+﻿<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>TypeScript HTML App</title>
+    <link rel="stylesheet" href="app.css" type="text/css" />
+    <script src="phaser.min.js"></script>
+    <script src="require.js"></script>
+    <script src="main.js"></script>
+    <script>
+        window.onload = () => {
+            require(['Event1/EventOne'], function (EventOneClass) {
+                var scene = new EventOneClass.EventOne();
+            });
+        };
+    </script>
+</head>
+<body>
+</body>
+</html>
