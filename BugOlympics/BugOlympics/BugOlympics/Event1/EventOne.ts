@@ -2,17 +2,20 @@
 
 import { Player } from "./Player";
 import { Flea } from "./Flea";
+import { StandingsRail } from "./StandingsRail";
 
 export class EventOne implements GameScene {
 
+
+    player: Player;
+    flea: Flea;
+    standingsRail: StandingsRail;
 
     camera: Phaser.Camera;
     game: Phaser.Game;
     graphics: Phaser.Graphics;
     ground: Phaser.Group;
     groundHeight: number;
-    player: Player;
-    flea: Flea;
     activePointer: Phaser.Pointer;
     initialCutscene: boolean;
 
@@ -49,6 +52,9 @@ export class EventOne implements GameScene {
         this.game.load.image('sky', 'content/sky.png');
         this.game.load.image('ground', 'content/platform.png');
         this.game.load.image('flea', 'content/fleaStanding.png');
+        this.game.load.image('standingsRail', 'content/trackTile.png');
+        this.game.load.image('playerHead', 'content/playerHead.png');
+        this.game.load.image('fleaHead', 'content/fleaHead.png');
         this.game.load.spritesheet('dude', 'content/dude.png', 32, 48);
     }
 
@@ -66,7 +72,7 @@ export class EventOne implements GameScene {
         this.pillarMinHoleY = 150
         this.pillarMaxHoleY = this.game.height - this.pillarMaxHoleSize - 40;
 
-        this.numberOfScreens = 30;
+        this.numberOfScreens = 5;
 
 
         //  Use Arcade Physics
@@ -135,7 +141,9 @@ export class EventOne implements GameScene {
 
         this.flea.cutsceneEndedSignal.add(this.endCutscene, this);
 
+        this.createStandingsRail();
     }
+
 
     endCutscene() {
         if (this.initialCutscene) {
@@ -143,7 +151,12 @@ export class EventOne implements GameScene {
             this.player.sprite.body.enable = true;
             this.camera.unfollow();
             this.cameraMoving = true;
+            this.standingsRail.setVisible(true);
         }
+    }
+
+    createStandingsRail() {
+        this.standingsRail = new StandingsRail(this.game, 'playerHead', 'fleaHead', 'standingsRail',);
     }
 
     createFlea() {
@@ -196,6 +209,7 @@ export class EventOne implements GameScene {
     gameLoop() {
         this.activePointer = this.game.input.activePointer;
         this.player.update(this);
+        this.standingsRail.update(this);
 
         var playerScreenLocation = this.player.currentScreen;
         var desiredCameraLocation = playerScreenLocation * this.game.width;

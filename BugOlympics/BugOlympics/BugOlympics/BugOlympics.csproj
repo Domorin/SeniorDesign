@@ -99,6 +99,7 @@
     <TypeScriptCompile Include="Event1\ChargeMeter.ts" />
     <TypeScriptCompile Include="Event1\EventOne.ts" />
     <TypeScriptCompile Include="Event1\Flea.ts" />
+    <TypeScriptCompile Include="Event1\StandingsRail.ts" />
     <TypeScriptCompile Include="GameScene.ts" />
     <TypeScriptCompile Include="IRenderable.ts" />
     <TypeScriptCompile Include="IUpdatable.ts" />
