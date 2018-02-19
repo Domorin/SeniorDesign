@@ -11,3 +11,9 @@ C:\Users\codyd\Desktop\SeniorDesign\BugOlympics\BugOlympics\BugOlympics\bin\Type
 C:\Users\codyd\Desktop\SeniorDesign\BugOlympics\BugOlympics\BugOlympics\obj\Debug\TypeScriptHTMLApp1.dll
 C:\Users\codyd\Desktop\SeniorDesign\BugOlympics\BugOlympics\BugOlympics\obj\Debug\TypeScriptHTMLApp1.pdb
 C:\Users\codyd\Desktop\SeniorDesign\BugOlympics\BugOlympics\BugOlympics\obj\Debug\BugOlympics.csprojResolveAssemblyReference.cache
+C:\Users\codyd\Desktop\RealSeniorDesign\BugOlympics\BugOlympics\BugOlympics\obj\Debug\BugOlympics.csprojResolveAssemblyReference.cache
+C:\Users\codyd\Desktop\RealSeniorDesign\BugOlympics\BugOlympics\BugOlympics\bin\TypeScriptHTMLApp1.dll.config
+C:\Users\codyd\Desktop\RealSeniorDesign\BugOlympics\BugOlympics\BugOlympics\bin\TypeScriptHTMLApp1.dll
+C:\Users\codyd\Desktop\RealSeniorDesign\BugOlympics\BugOlympics\BugOlympics\bin\TypeScriptHTMLApp1.pdb
+C:\Users\codyd\Desktop\RealSeniorDesign\BugOlympics\BugOlympics\BugOlympics\obj\Debug\TypeScriptHTMLApp1.dll
+C:\Users\codyd\Desktop\RealSeniorDesign\BugOlympics\BugOlympics\BugOlympics\obj\Debug\TypeScriptHTMLApp1.pdb

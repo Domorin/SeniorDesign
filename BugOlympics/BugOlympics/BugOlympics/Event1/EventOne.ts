@@ -1,6 +1,7 @@
 ﻿/// <reference path="Player.ts" />
 
 import { Player } from "./Player";
+import { Flea } from "./Flea";
 
 export class EventOne implements GameScene {
 
@@ -11,7 +12,9 @@ export class EventOne implements GameScene {
     ground: Phaser.Group;
     groundHeight: number;
     player: Player;
+    flea: Flea;
     activePointer: Phaser.Pointer;
+    initialCutscene: boolean;
 
     score: Phaser.Text;
 
@@ -20,7 +23,8 @@ export class EventOne implements GameScene {
 
     pillars: Phaser.Group;
 
-    spawnPoint: Phaser.Point;
+    playerSpawnPoint: Phaser.Point;
+    fleaSpawnPoint: Phaser.Point;
 
     pillarMaxSpawnX: number;
     pillarMinSpawnX: number;
@@ -44,11 +48,14 @@ export class EventOne implements GameScene {
         this.game.load.image('pillarTile', 'content/pillarTile.png');
         this.game.load.image('sky', 'content/sky.png');
         this.game.load.image('ground', 'content/platform.png');
+        this.game.load.image('flea', 'content/fleaStanding.png');
         this.game.load.spritesheet('dude', 'content/dude.png', 32, 48);
     }
 
     create() {
         console.log("Creating!")
+
+        this.initialCutscene = true;
 
         this.pillarMaxSpawnX = this.game.width * 9/10;
         this.pillarMinSpawnX = this.game.width / 2;
@@ -65,7 +72,7 @@ export class EventOne implements GameScene {
         //  Use Arcade Physics
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
-        this.worldDimensions = new Phaser.Point(this.game.width * (this.numberOfScreens), this.game.height);
+        this.worldDimensions = new Phaser.Point(this.game.width * (this.numberOfScreens), this.game.height * 3);
         this.game.world.setBounds(0, 0, this.worldDimensions.x, this.worldDimensions.y);
 
         var pillarTileHeight = this.game.cache.getImage("pillarTile").height;
@@ -102,12 +109,15 @@ export class EventOne implements GameScene {
         //  Set the immovable property for all objects in the platforms group.
         this.ground.setAll('body.immovable', true);
 
-        this.spawnPoint = new Phaser.Point(150, this.game.world.height - 128 - this.game.cache.getImage('dude').height - 5);
+        this.playerSpawnPoint = new Phaser.Point(150, this.game.world.height - 128 - this.game.cache.getImage('dude').height - 5);
+        this.fleaSpawnPoint = new Phaser.Point(this.playerSpawnPoint.x - 50, this.playerSpawnPoint.y);
 
-        var playerSprite = this.game.add.sprite(150, this.spawnPoint.y, 'dude', 8); 
+        var playerSprite = this.game.add.sprite(this.playerSpawnPoint.x, this.playerSpawnPoint.y, 'dude', 8); 
         //  We need to enable physics on the player
         this.game.physics.arcade.enable(playerSprite);
         this.player = new Player(playerSprite);
+
+        this.createFlea();
 
         this.game.camera.bounds = new Phaser.Rectangle(0, 0, this.worldDimensions.x, this.worldDimensions.y);
         this.cameraMoving = false;
@@ -119,6 +129,12 @@ export class EventOne implements GameScene {
         this.score = this.game.add.text(this.game.width - 55, 5, "1/" + this.numberOfScreens, style);
         this.score.fixedToCamera = true;
 
+    }
+
+    createFlea() {
+        var fleaSprite = this.game.add.sprite(this.fleaSpawnPoint.x, this.fleaSpawnPoint.y, 'flea');
+        this.game.physics.arcade.enable(fleaSprite);
+        this.flea = new Flea(fleaSprite, this.game.time.create(true));
     }
 
     createPillars(pillarTileHeight: number) {
@@ -137,7 +153,7 @@ export class EventOne implements GameScene {
 
 
     createPillar(x: number, holeY: number, holeSize: number, pillarTileHeight: number) {
-        for (var curHeight = 0; curHeight < this.worldDimensions.y; curHeight += pillarTileHeight) {
+        for (var curHeight = this.worldDimensions.y - this.game.height; curHeight < this.worldDimensions.y; curHeight += pillarTileHeight) {
             var holeLocation = this.worldDimensions.y - holeY - holeSize;
             if (curHeight >= holeLocation && curHeight < holeLocation + holeSize) {
                 curHeight = holeLocation + holeSize;
@@ -152,7 +168,25 @@ export class EventOne implements GameScene {
 
     // Update everything in the scene
     update() {
-        this.activePointer = this.game.input.activePointer;        
+        if (this.initialCutscene) {
+            var playerCollided: boolean = this.game.physics.arcade.collide(this.player.sprite, this.ground);
+            var fleaCollided: boolean = this.game.physics.arcade.collide(this.flea.sprite, this.ground)
+            if (playerCollided) {
+                this.player.hitPlatform();
+            }
+            if (fleaCollided) {
+                this.flea.hitPlatform();
+            }
+            this.game.camera.setPosition(this.flea.sprite.position.x, this.flea.sprite.position.y);
+
+        } else {
+            this.gameLoop();
+        }
+        
+    }
+
+    gameLoop() {
+        this.activePointer = this.game.input.activePointer;
         this.player.update(this);
 
         var playerScreenLocation = this.player.currentScreen;
@@ -172,7 +206,7 @@ export class EventOne implements GameScene {
             // Camera transition complete
             if (this.game.camera.position.x >= desiredCameraLocation) {
                 this.game.world.setBounds(desiredCameraLocation, 0, this.worldDimensions.x, this.worldDimensions.y);
-                this.spawnPoint.add(this.game.width, 0);
+                this.playerSpawnPoint.add(this.game.width, 0);
                 this.game.camera.setPosition(desiredCameraLocation, 0);
                 this.cameraMoving = false;
 

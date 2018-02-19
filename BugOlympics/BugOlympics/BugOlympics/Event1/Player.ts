@@ -53,16 +53,15 @@ export class Player implements IUpdatable, IRenderable {
         var hitPlatform: boolean = myScene.game.physics.arcade.collide(this.sprite, myScene.ground);
         var hitPillar: boolean = myScene.game.physics.arcade.collide(this.sprite, myScene.pillars);
         if (hitPillar) {
-            this.sprite.position.x = myScene.spawnPoint.x;
-            this.sprite.position.y = myScene.spawnPoint.y;
+            this.sprite.position.x = myScene.playerSpawnPoint.x;
+            this.sprite.position.y = myScene.playerSpawnPoint.y;
             this.sprite.body.velocity.x = 0;
             this.sprite.body.velocity.y = 0;
         }        
 
         // If players feet are touching the floor, set X velocity to 0
         if (hitPlatform) {
-            this.sprite.body.velocity.x = 0;
-            this.onGround = true;
+            this.hitPlatform();
         } else {
             this.onGround = false;
         }
@@ -73,6 +72,11 @@ export class Player implements IUpdatable, IRenderable {
         } else { // Disable movement if camera is moving
             this.sprite.body.enable = false;
         }
+    }
+
+    hitPlatform() {
+        this.sprite.body.velocity.x = 0;
+        this.onGround = true;
     }
 
     playerClicked(s) {
