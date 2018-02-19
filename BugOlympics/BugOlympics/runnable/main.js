@@ -78,7 +78,7 @@ define("Event1/Player", ["require", "exports", "Event1/chargeMeter"], function (
             this.RECT_WIDTH = 7;
             this.beingDragged = false;
             this.onGround = true;
-            this.currentScreen = 0;
+            this.currentScreen = 1;
             this.changedScreens = false;
             console.log("Creating player!");
             this.sprite = sprite;
@@ -102,19 +102,19 @@ define("Event1/Player", ["require", "exports", "Event1/chargeMeter"], function (
             else {
                 this.changedScreens = false;
             }
+            console.log("UPDATING!");
             //  Collide the player with the platforms and pillars
             var hitPlatform = myScene.game.physics.arcade.collide(this.sprite, myScene.ground);
             var hitPillar = myScene.game.physics.arcade.collide(this.sprite, myScene.pillars);
             if (hitPillar) {
-                this.sprite.position.x = myScene.spawnPoint.x;
-                this.sprite.position.y = myScene.spawnPoint.y;
+                this.sprite.position.x = myScene.playerSpawnPoint.x;
+                this.sprite.position.y = myScene.playerSpawnPoint.y;
                 this.sprite.body.velocity.x = 0;
                 this.sprite.body.velocity.y = 0;
             }
             // If players feet are touching the floor, set X velocity to 0
             if (hitPlatform) {
-                this.sprite.body.velocity.x = 0;
-                this.onGround = true;
+                this.hitPlatform();
             }
             else {
                 this.onGround = false;
@@ -128,6 +128,11 @@ define("Event1/Player", ["require", "exports", "Event1/chargeMeter"], function (
                 this.sprite.body.enable = false;
             }
         };
+        Player.prototype.hitPlatform = function () {
+            console.log("hello?");
+            this.sprite.body.velocity.x = 0;
+            this.onGround = true;
+        };
         Player.prototype.playerClicked = function (s) {
             if (this.onGround) {
                 this.beingDragged = true;
@@ -140,8 +145,137 @@ define("Event1/Player", ["require", "exports", "Event1/chargeMeter"], function (
     }());
     exports.Player = Player;
 });
+define("Utils", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var Utils = (function () {
+        function Utils() {
+        }
+        Utils.randomIntFromInterval = function (min, max) {
+            return Math.floor(Math.random() * (max - min + 1) + min);
+        };
+        return Utils;
+    }());
+    exports.Utils = Utils;
+});
+define("Event1/Flea", ["require", "exports", "Utils"], function (require, exports, Utils_1) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var Flea = (function () {
+        function Flea(sprite, timer) {
+            this.GRAVITY = 300;
+            this.INITIAL_HOPS = 5;
+            this.HOP_MIN_VELOCITY = 125;
+            this.HOP_MAX_VELOCITY = 75;
+            this.HOP_DELAY = 1000;
+            this.currentHops = 0;
+            this.X_LEAP_VELOCITY = 200;
+            this.initialCutscene = true;
+            this.sprite = sprite;
+            this.sprite.body.bounce.y = 0.2;
+            this.sprite.body.gravity.y = this.GRAVITY;
+            this.sprite.body.collideWorldBounds = true;
+            this.sprite.body.stopVelocityOnCollide = true;
+            this.onGround = true;
+            this.timer = timer;
+            this.timer.start();
+            this.startHop();
+            this.leaping = false;
+            this.cutsceneEndedSignal = new Phaser.Signal();
+        }
+        Flea.prototype.startHop = function () {
+            this.currentHops = 0;
+            console.log("STARITNG HOP!!");
+            this.timer.start();
+            this.timer.add(this.HOP_DELAY, this.hop, this);
+        };
+        Flea.prototype.hop = function () {
+            this.currentHops++;
+            var hopVelocity = Utils_1.Utils.randomIntFromInterval(this.HOP_MIN_VELOCITY, this.HOP_MAX_VELOCITY);
+            this.sprite.body.velocity.y = -hopVelocity;
+            var hopInterval = 2 * hopVelocity / this.GRAVITY * 1000;
+            var funcToAdd = this.hop;
+            if (this.currentHops >= this.INITIAL_HOPS) {
+                funcToAdd = this.leap;
+            }
+            this.timer.add(hopInterval, funcToAdd, this);
+        };
+        Flea.prototype.leap = function () {
+            this.leaping = true;
+            var time = 1024 / this.X_LEAP_VELOCITY;
+            var yVelocity = 1 / 2 * time * -this.GRAVITY;
+            this.sprite.body.velocity.y = yVelocity;
+            this.sprite.body.velocity.x = this.X_LEAP_VELOCITY;
+        };
+        Flea.prototype.hitPlatform = function () {
+            this.onGround = true;
+            this.sprite.body.velocity.x = 0;
+            if (this.leaping) {
+                this.cutsceneEndedSignal.dispatch();
+                this.leaping = false;
+                this.startHop();
+            }
+        };
+        Flea.prototype.update = function (scene) {
+            var fleaCollided = scene.game.physics.arcade.collide(this.sprite, scene.ground, this.hitPlatform, null, this);
+        };
+        return Flea;
+    }());
+    exports.Flea = Flea;
+});
+define("Event1/StandingsRail", ["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    var StandingsRail = (function () {
+        function StandingsRail(game, playerKey, fleaKey, tileSpriteKey) {
+            this.HORIZONTAL_BUFFER = 64;
+            this.VERTICAL_BUFFER = 64;
+            this.game = game;
+            this.tileSpriteKey = tileSpriteKey;
+            this.createRail(this.game, this.tileSpriteKey, playerKey, fleaKey);
+            this.setVisible(false);
+        }
+        StandingsRail.prototype.createRail = function (game, tileSpriteKey, playerKey, fleaKey) {
+            this.tileWidth = game.cache.getImage(tileSpriteKey).width;
+            this.tileHeight = game.cache.getImage(tileSpriteKey).height;
+            this.numOfTiles = Math.floor((game.width - this.HORIZONTAL_BUFFER * 2) / this.tileWidth);
+            this.railLength = this.tileWidth * this.numOfTiles;
+            this.railTiles = game.add.group();
+            var y = game.height - this.VERTICAL_BUFFER - this.tileHeight / 2;
+            var x = this.HORIZONTAL_BUFFER;
+            for (var i = 0; i < this.numOfTiles; i++) {
+                var curSprite = game.add.sprite(x, y, tileSpriteKey);
+                this.railTiles.add(curSprite);
+                curSprite.fixedToCamera = true;
+                x += this.tileWidth;
+            }
+            this.fleaHead = game.add.sprite(0, 0, fleaKey);
+            this.fleaHead.x = this.HORIZONTAL_BUFFER - this.fleaHead.width / 2;
+            this.fleaHead.y = game.height - this.VERTICAL_BUFFER - this.tileHeight / 2 - this.fleaHead.height * 1 / 2;
+            this.fleaHead.fixedToCamera = true;
+            this.playerHead = game.add.sprite(0, 0, playerKey);
+            this.playerHead.x = this.HORIZONTAL_BUFFER - this.playerHead.width / 2;
+            this.playerHead.y = game.height - this.VERTICAL_BUFFER - this.tileHeight / 2 - this.playerHead.height * 1 / 2;
+            this.playerHead.fixedToCamera = true;
+        };
+        StandingsRail.prototype.setVisible = function (visibility) {
+            this.railTiles.setAll("visible", visibility);
+            this.fleaHead.visible = visibility;
+            this.playerHead.visible = visibility;
+        };
+        StandingsRail.prototype.update = function (scene) {
+            var myScene = scene;
+            var playerProgressRatio = myScene.player.sprite.x / myScene.worldDimensions.x;
+            this.playerHead.cameraOffset.x = this.HORIZONTAL_BUFFER - this.playerHead.width / 2 + playerProgressRatio * this.railLength;
+            var fleaProgressRatio = myScene.flea.sprite.x / myScene.worldDimensions.x;
+            this.fleaHead.cameraOffset.x = this.HORIZONTAL_BUFFER - this.fleaHead.width / 2 + fleaProgressRatio * this.railLength;
+        };
+        return StandingsRail;
+    }());
+    exports.StandingsRail = StandingsRail;
+});
 /// <reference path="Player.ts" />
-define("Event1/EventOne", ["require", "exports", "Event1/Player"], function (require, exports, Player_1) {
+define("Event1/EventOne", ["require", "exports", "Event1/Player", "Event1/Flea", "Event1/StandingsRail"], function (require, exports, Player_1, Flea_1, StandingsRail_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var EventOne = (function () {
@@ -152,20 +286,25 @@ define("Event1/EventOne", ["require", "exports", "Event1/Player"], function (req
             this.game.load.image('pillarTile', 'content/pillarTile.png');
             this.game.load.image('sky', 'content/sky.png');
             this.game.load.image('ground', 'content/platform.png');
+            this.game.load.image('flea', 'content/fleaStanding.png');
+            this.game.load.image('standingsRail', 'content/trackTile.png');
+            this.game.load.image('playerHead', 'content/playerHead.png');
+            this.game.load.image('fleaHead', 'content/fleaHead.png');
             this.game.load.spritesheet('dude', 'content/dude.png', 32, 48);
         };
         EventOne.prototype.create = function () {
             console.log("Creating!");
+            this.initialCutscene = true;
             this.pillarMaxSpawnX = this.game.width * 9 / 10;
             this.pillarMinSpawnX = this.game.width / 2;
             this.pillarMaxHoleSize = 300;
             this.pillarMinHoleSize = 100;
             this.pillarMinHoleY = 150;
             this.pillarMaxHoleY = this.game.height - this.pillarMaxHoleSize - 40;
-            this.numberOfScreens = 30;
+            this.numberOfScreens = 5;
             //  Use Arcade Physics
             this.game.physics.startSystem(Phaser.Physics.ARCADE);
-            this.worldDimensions = new Phaser.Point(this.game.width * (this.numberOfScreens), this.game.height);
+            this.worldDimensions = new Phaser.Point(this.game.width * (this.numberOfScreens), this.game.height * 3);
             this.game.world.setBounds(0, 0, this.worldDimensions.x, this.worldDimensions.y);
             var pillarTileHeight = this.game.cache.getImage("pillarTile").height;
             //  A simple background for our game
@@ -192,18 +331,41 @@ define("Event1/EventOne", ["require", "exports", "Event1/Player"], function (req
             ground.scale.setTo(3 * this.numberOfScreens, 4);
             //  Set the immovable property for all objects in the platforms group.
             this.ground.setAll('body.immovable', true);
-            this.spawnPoint = new Phaser.Point(150, this.game.world.height - 128 - this.game.cache.getImage('dude').height - 5);
-            var playerSprite = this.game.add.sprite(150, this.spawnPoint.y, 'dude', 8);
+            this.playerSpawnPoint = new Phaser.Point(150 + this.game.width, this.game.world.height - 128 - this.game.cache.getImage('dude').height - 5);
+            this.fleaSpawnPoint = new Phaser.Point(this.playerSpawnPoint.x - 50 - this.game.width, this.playerSpawnPoint.y);
+            var playerSprite = this.game.add.sprite(this.playerSpawnPoint.x, this.playerSpawnPoint.y, 'dude', 8);
             //  We need to enable physics on the player
             this.game.physics.arcade.enable(playerSprite);
             this.player = new Player_1.Player(playerSprite);
+            this.createFlea();
             this.game.camera.bounds = new Phaser.Rectangle(0, 0, this.worldDimensions.x, this.worldDimensions.y);
             this.cameraMoving = false;
             this.cameraMoveSpeed = 20;
+            this.camera.follow(this.flea.sprite);
             this.graphics = this.game.add.graphics(0, 0);
             var style = { font: "bold 20px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
             this.score = this.game.add.text(this.game.width - 55, 5, "1/" + this.numberOfScreens, style);
             this.score.fixedToCamera = true;
+            this.player.sprite.body.enable = false;
+            this.flea.cutsceneEndedSignal.add(this.endCutscene, this);
+            this.createStandingsRail();
+        };
+        EventOne.prototype.endCutscene = function () {
+            if (this.initialCutscene) {
+                this.initialCutscene = false;
+                this.player.sprite.body.enable = true;
+                this.camera.unfollow();
+                this.cameraMoving = true;
+                this.standingsRail.setVisible(true);
+            }
+        };
+        EventOne.prototype.createStandingsRail = function () {
+            this.standingsRail = new StandingsRail_1.StandingsRail(this.game, 'playerHead', 'fleaHead', 'standingsRail');
+        };
+        EventOne.prototype.createFlea = function () {
+            var fleaSprite = this.game.add.sprite(this.fleaSpawnPoint.x, this.fleaSpawnPoint.y, 'flea');
+            this.game.physics.arcade.enable(fleaSprite);
+            this.flea = new Flea_1.Flea(fleaSprite, this.game.time.create(false));
         };
         EventOne.prototype.createPillars = function (pillarTileHeight) {
             // Do not have a pillar on the last screen
@@ -219,7 +381,7 @@ define("Event1/EventOne", ["require", "exports", "Event1/Player"], function (req
             }
         };
         EventOne.prototype.createPillar = function (x, holeY, holeSize, pillarTileHeight) {
-            for (var curHeight = 0; curHeight < this.worldDimensions.y; curHeight += pillarTileHeight) {
+            for (var curHeight = this.worldDimensions.y - this.game.height; curHeight < this.worldDimensions.y; curHeight += pillarTileHeight) {
                 var holeLocation = this.worldDimensions.y - holeY - holeSize;
                 if (curHeight >= holeLocation && curHeight < holeLocation + holeSize) {
                     curHeight = holeLocation + holeSize;
@@ -232,26 +394,37 @@ define("Event1/EventOne", ["require", "exports", "Event1/Player"], function (req
         };
         // Update everything in the scene
         EventOne.prototype.update = function () {
+            this.flea.update(this);
+            if (!this.initialCutscene) {
+                this.gameLoop();
+            }
+        };
+        EventOne.prototype.startGame = function () {
+            this.player.sprite.body.enable = true;
+        };
+        EventOne.prototype.gameLoop = function () {
             this.activePointer = this.game.input.activePointer;
             this.player.update(this);
+            this.standingsRail.update(this);
             var playerScreenLocation = this.player.currentScreen;
             var desiredCameraLocation = playerScreenLocation * this.game.width;
+            console.log(this.camera.x, this.camera.y);
             if (this.player.changedScreens) {
                 this.cameraMoving = true;
             }
             // Need to handle if player goes back/respawning camera!
             if (this.cameraMoving) {
-                this.game.camera.setPosition(this.game.camera.position.x + this.cameraMoveSpeed, 0);
+                this.game.camera.setPosition(this.game.camera.position.x + this.cameraMoveSpeed, this.worldDimensions.y - this.game.height);
                 this.score.text = "" + (Math.floor(Math.random() * 10)) + "/" + this.numberOfScreens;
                 if (this.player.currentScreen >= 9) {
                     this.score.text = (Math.floor(Math.random() * 10)) + this.score.text;
                 }
-                console.log(this.score.text);
                 // Camera transition complete
                 if (this.game.camera.position.x >= desiredCameraLocation) {
-                    this.game.world.setBounds(desiredCameraLocation, 0, this.worldDimensions.x, this.worldDimensions.y);
-                    this.spawnPoint.add(this.game.width, 0);
-                    this.game.camera.setPosition(desiredCameraLocation, 0);
+                    this.playerSpawnPoint.x = this.game.width * this.player.currentScreen + 150;
+                    // dont need to set this every frame
+                    this.game.world.setBounds(this.game.width, 0, this.worldDimensions.x - this.game.width, this.worldDimensions.y);
+                    this.game.camera.setPosition(desiredCameraLocation, this.worldDimensions.y - this.game.height);
                     this.cameraMoving = false;
                     this.score.text = this.player.currentScreen + 1 + "/" + this.numberOfScreens;
                 }
