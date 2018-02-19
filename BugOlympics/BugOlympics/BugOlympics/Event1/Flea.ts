@@ -3,6 +3,8 @@
 export class Flea implements IUpdatable, IRenderable {
 
     constructor(sprite: Phaser.Sprite, timer: Phaser.Timer) {
+        this.initialCutscene = true;
+
         this.sprite = sprite;
         this.sprite.body.bounce.y = 0.2;
         this.sprite.body.gravity.y = this.GRAVITY;
@@ -13,12 +15,22 @@ export class Flea implements IUpdatable, IRenderable {
 
         this.timer = timer;
 
-        this.timer.add(this.HOP_DELAY, this.hop, this);
         this.timer.start();
+
+        this.startHop();
+
+        this.leaping = false;
+
+        this.cutsceneEndedSignal = new Phaser.Signal();
     }
+
+    cutsceneEndedSignal: Phaser.Signal;
+
+    initialCutscene: boolean;
 
     sprite: Phaser.Sprite;
     onGround: boolean;
+    leaping: boolean;
 
     GRAVITY: number = 300;
     INITIAL_HOPS: number = 5;
@@ -30,6 +42,14 @@ export class Flea implements IUpdatable, IRenderable {
     X_LEAP_VELOCITY: number = 200;
 
     timer: Phaser.Timer;
+
+    startHop() {
+        this.currentHops = 0;
+
+        console.log("STARITNG HOP!!");
+        this.timer.start();
+        this.timer.add(this.HOP_DELAY, this.hop, this);
+    }
 
     hop() {
         this.currentHops++;
@@ -45,6 +65,8 @@ export class Flea implements IUpdatable, IRenderable {
     }
 
     leap() {
+        this.leaping = true;
+
         var time: number = 1024 / this.X_LEAP_VELOCITY;
         var yVelocity: number = 1 / 2 * time * -this.GRAVITY;
         this.sprite.body.velocity.y = yVelocity;
@@ -55,10 +77,19 @@ export class Flea implements IUpdatable, IRenderable {
     hitPlatform() {        
         this.onGround = true;
         this.sprite.body.velocity.x = 0;
+
+        if (this.leaping) {
+            this.cutsceneEndedSignal.dispatch();
+
+            this.leaping = false;
+            this.startHop();
+        }
     }
 
     render: (graphics: Phaser.Graphics) => void;
 
-    update: (scene: GameScene) => void;
+    update(scene: GameScene) {
+        var fleaCollided: boolean = scene.game.physics.arcade.collide(this.sprite, scene.ground, this.hitPlatform, null, this);
+    }
 
 }

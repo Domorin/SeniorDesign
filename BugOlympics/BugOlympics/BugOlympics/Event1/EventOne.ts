@@ -109,8 +109,8 @@ export class EventOne implements GameScene {
         //  Set the immovable property for all objects in the platforms group.
         this.ground.setAll('body.immovable', true);
 
-        this.playerSpawnPoint = new Phaser.Point(150, this.game.world.height - 128 - this.game.cache.getImage('dude').height - 5);
-        this.fleaSpawnPoint = new Phaser.Point(this.playerSpawnPoint.x - 50, this.playerSpawnPoint.y);
+        this.playerSpawnPoint = new Phaser.Point(150 + this.game.width, this.game.world.height - 128 - this.game.cache.getImage('dude').height - 5);
+        this.fleaSpawnPoint = new Phaser.Point(this.playerSpawnPoint.x - 50 - this.game.width, this.playerSpawnPoint.y);
 
         var playerSprite = this.game.add.sprite(this.playerSpawnPoint.x, this.playerSpawnPoint.y, 'dude', 8); 
         //  We need to enable physics on the player
@@ -122,6 +122,8 @@ export class EventOne implements GameScene {
         this.game.camera.bounds = new Phaser.Rectangle(0, 0, this.worldDimensions.x, this.worldDimensions.y);
         this.cameraMoving = false;
         this.cameraMoveSpeed = 20;
+
+        this.camera.follow(this.flea.sprite);
         
         this.graphics = this.game.add.graphics(0, 0);
 
@@ -129,12 +131,25 @@ export class EventOne implements GameScene {
         this.score = this.game.add.text(this.game.width - 55, 5, "1/" + this.numberOfScreens, style);
         this.score.fixedToCamera = true;
 
+        this.player.sprite.body.enable = false;
+
+        this.flea.cutsceneEndedSignal.add(this.endCutscene, this);
+
+    }
+
+    endCutscene() {
+        if (this.initialCutscene) {
+            this.initialCutscene = false;
+            this.player.sprite.body.enable = true;
+            this.camera.unfollow();
+            this.cameraMoving = true;
+        }
     }
 
     createFlea() {
         var fleaSprite = this.game.add.sprite(this.fleaSpawnPoint.x, this.fleaSpawnPoint.y, 'flea');
         this.game.physics.arcade.enable(fleaSprite);
-        this.flea = new Flea(fleaSprite, this.game.time.create(true));
+        this.flea = new Flea(fleaSprite, this.game.time.create(false));
     }
 
     createPillars(pillarTileHeight: number) {
@@ -168,21 +183,14 @@ export class EventOne implements GameScene {
 
     // Update everything in the scene
     update() {
-        if (this.initialCutscene) {
-            var playerCollided: boolean = this.game.physics.arcade.collide(this.player.sprite, this.ground);
-            var fleaCollided: boolean = this.game.physics.arcade.collide(this.flea.sprite, this.ground)
-            if (playerCollided) {
-                this.player.hitPlatform();
-            }
-            if (fleaCollided) {
-                this.flea.hitPlatform();
-            }
-            this.game.camera.setPosition(this.flea.sprite.position.x, this.flea.sprite.position.y);
-
-        } else {
+        this.flea.update(this);
+        if (!this.initialCutscene) {
             this.gameLoop();
         }
-        
+    }
+
+    startGame() {
+        this.player.sprite.body.enable = true;
     }
 
     gameLoop() {
@@ -191,23 +199,24 @@ export class EventOne implements GameScene {
 
         var playerScreenLocation = this.player.currentScreen;
         var desiredCameraLocation = playerScreenLocation * this.game.width;
+        console.log(this.camera.x, this.camera.y);
         if (this.player.changedScreens) {
             this.cameraMoving = true;
         }
 
         // Need to handle if player goes back/respawning camera!
         if (this.cameraMoving) {
-            this.game.camera.setPosition(this.game.camera.position.x + this.cameraMoveSpeed, 0);
+            this.game.camera.setPosition(this.game.camera.position.x + this.cameraMoveSpeed, this.worldDimensions.y - this.game.height);
             this.score.text = "" + (Math.floor(Math.random() * 10)) + "/" + this.numberOfScreens;
             if (this.player.currentScreen >= 9) {
                 this.score.text = (Math.floor(Math.random() * 10)) + this.score.text;
             }
-            console.log(this.score.text);
             // Camera transition complete
             if (this.game.camera.position.x >= desiredCameraLocation) {
-                this.game.world.setBounds(desiredCameraLocation, 0, this.worldDimensions.x, this.worldDimensions.y);
-                this.playerSpawnPoint.add(this.game.width, 0);
-                this.game.camera.setPosition(desiredCameraLocation, 0);
+                this.playerSpawnPoint.x = this.game.width * this.player.currentScreen + 150;
+                // dont need to set this every frame
+                this.game.world.setBounds(this.game.width, 0, this.worldDimensions.x - this.game.width, this.worldDimensions.y);
+                this.game.camera.setPosition(desiredCameraLocation, this.worldDimensions.y - this.game.height);
                 this.cameraMoving = false;
 
                 this.score.text = this.player.currentScreen + 1 + "/" + this.numberOfScreens;

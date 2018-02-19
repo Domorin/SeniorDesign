@@ -33,7 +33,7 @@ export class Player implements IUpdatable, IRenderable {
     beingDragged: boolean = false;
     onGround: boolean = true;
 
-    currentScreen: number = 0;
+    currentScreen: number = 1;
     changedScreens: boolean = false;
 
 
@@ -48,6 +48,7 @@ export class Player implements IUpdatable, IRenderable {
             this.changedScreens = false;
         }
 
+        console.log("UPDATING!");
 
         //  Collide the player with the platforms and pillars
         var hitPlatform: boolean = myScene.game.physics.arcade.collide(this.sprite, myScene.ground);
@@ -75,6 +76,7 @@ export class Player implements IUpdatable, IRenderable {
     }
 
     hitPlatform() {
+        console.log("hello?");
         this.sprite.body.velocity.x = 0;
         this.onGround = true;
     }
