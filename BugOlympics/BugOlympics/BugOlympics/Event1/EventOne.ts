@@ -49,6 +49,12 @@ export class EventOne implements GameScene {
 
     PLATFORM_HEIGHT: number;
 
+    PILLAR_SHADOW_ANGLE: number;
+    LENGTH_OF_PILLAR_FIELD_SHADOWS: number;
+    NUM_OF_FIELD_PILLAR_SHADOWS: number;
+
+    shadowPolygons: Phaser.Polygon[];
+
     constructor() {
         this.game = new Phaser.Game(1024, 768, Phaser.AUTO, 'content', this);
     }
@@ -66,9 +72,14 @@ export class EventOne implements GameScene {
     }
 
     create() {
-        console.log("Creating!")
-
         this.PLATFORM_HEIGHT = 128;
+        this.PILLAR_SHADOW_ANGLE = 30 * Math.PI / 180;
+
+        var a = this.game.cache.getImage("ground").height - this.PLATFORM_HEIGHT;
+        this.LENGTH_OF_PILLAR_FIELD_SHADOWS = a / Math.cos(this.PILLAR_SHADOW_ANGLE);
+
+        console.log(this.LENGTH_OF_PILLAR_FIELD_SHADOWS);
+
 
         this.initialCutscene = true;
 
@@ -125,7 +136,7 @@ export class EventOne implements GameScene {
         this.pillars = this.game.add.group();
 
         this.pillars.enableBody = true;
-        this.createPillars(this.game.cache.getImage("pillarTile").height);
+        this.createPillars(this.game.cache.getImage("pillarTile").height, this.game.cache.getImage("pillarTile").width);
         this.pillars.setAll('body.immovable', true);  
 
 
@@ -216,7 +227,8 @@ export class EventOne implements GameScene {
         this.flea = new Flea(fleaSprite, this.game.time.create(false));
     }
 
-    createPillars(pillarTileHeight: number) {
+    createPillars(pillarTileHeight: number, pillarTileWidth: number) {
+        this.shadowPolygons = new Array(this.numberOfScreens + 1);
         // Do not have a pillar on the last screen
         for (var i = 0; i < this.numberOfScreens+1; i++) {
             var x = this.randomIntFromInterval(this.pillarMinSpawnX, this.pillarMaxSpawnX) + (i * this.game.width);
@@ -226,19 +238,43 @@ export class EventOne implements GameScene {
             console.log("X: ", x);
             console.log("Hole Y:", holeY);
             console.log("Hole Size:", holeSize);
-            this.createPillar(x, holeY, holeSize, pillarTileHeight);
+            this.createPillar(x, holeY, holeSize, pillarTileHeight, pillarTileWidth);
+            var endY = this.worldDimensions.y - this.PLATFORM_HEIGHT;
+
+            var x1 = x;
+            var y1 = endY;
+            var p1: Phaser.Point = new Phaser.Point(x1, y1);
+
+            var x2 = x + pillarTileWidth;
+            var y2 = endY;
+            var p2: Phaser.Point = new Phaser.Point(x2, y2);
+
+            var x3 = x + Math.sin(this.PILLAR_SHADOW_ANGLE) * (this.LENGTH_OF_PILLAR_FIELD_SHADOWS);
+            var y3 = this.worldDimensions.y - this.game.cache.getImage("ground").height;
+            var p3: Phaser.Point = new Phaser.Point(x3, y3);
+
+            var x4 = x + pillarTileWidth + Math.sin(this.PILLAR_SHADOW_ANGLE) * (this.LENGTH_OF_PILLAR_FIELD_SHADOWS);
+            var y4 = this.worldDimensions.y - this.game.cache.getImage("ground").height;
+            var p4: Phaser.Point = new Phaser.Point(x4, y4);
+
+            this.shadowPolygons[i] = new Phaser.Polygon([p1, p2, p4, p3]);
         }
     }
 
 
-    createPillar(x: number, holeY: number, holeSize: number, pillarTileHeight: number) {
-        for (var curHeight = this.worldDimensions.y - this.game.height; curHeight < this.worldDimensions.y - this.PLATFORM_HEIGHT; curHeight += pillarTileHeight) {
+
+    createPillar(x: number, holeY: number, holeSize: number, pillarTileHeight: number, width: number) {       
+
+        var endY = this.worldDimensions.y - this.PLATFORM_HEIGHT;
+        for (var curHeight = this.worldDimensions.y - this.game.height; curHeight < endY; curHeight += pillarTileHeight) {
             var holeLocation = this.worldDimensions.y - holeY - holeSize;
             if (curHeight >= holeLocation && curHeight < holeLocation + holeSize) {
                 curHeight = holeLocation + holeSize;
             }
-            this.pillars.create(x, curHeight, 'pillarTile');
+            this.pillars.create(x, curHeight, 'pillarTile');            
         }
+
+
     }
 
     randomIntFromInterval(min, max) {
@@ -290,8 +326,12 @@ export class EventOne implements GameScene {
     }
 
     render() {
-        this.graphics.clear()
+        this.graphics.clear()        
         this.player.render(this.graphics);
+        this.graphics.beginFill(0x000000, 0x888888);
+        for (var i = 0; i < this.shadowPolygons.length; i++) {
+            this.graphics.drawPolygon(this.shadowPolygons[i].points);
+        }
 }
 
 }
