@@ -18,6 +18,8 @@ export class Player implements IUpdatable, IRenderable {
         this.sprite.events.onInputDown.add((s) =>
             this.playerClicked(s)
         );  
+
+        this.finishedSignal = new Phaser.Signal();
     }
 
     // Constants
@@ -33,6 +35,8 @@ export class Player implements IUpdatable, IRenderable {
     beingDragged: boolean = false;
     onGround: boolean = true;
 
+    finishedSignal: Phaser.Signal;
+
     currentScreen: number = 1;
     changedScreens: boolean = false;
 
@@ -43,7 +47,10 @@ export class Player implements IUpdatable, IRenderable {
         var prevScreen = this.currentScreen;
         this.currentScreen = Math.floor(this.sprite.position.x / myScene.game.width);
         if (prevScreen != this.currentScreen) {
-            this.changedScreens = true;            
+            this.changedScreens = true;
+            if (this.currentScreen == myScene.numberOfScreens + 1) {
+                this.finishedSignal.dispatch();
+            }
         } else {
             this.changedScreens = false;
         }

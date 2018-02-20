@@ -20,7 +20,7 @@ export class StandingsRail implements IUpdatable {
 
         this.railTiles = game.add.group();
 
-        var y = game.height - this.VERTICAL_BUFFER - this.tileHeight / 2;
+        var y = this.VERTICAL_BUFFER;
         var x = this.HORIZONTAL_BUFFER;
         for (var i = 0; i < this.numOfTiles; i++) {
             var curSprite: Phaser.Sprite = game.add.sprite(x, y, tileSpriteKey);
@@ -31,12 +31,12 @@ export class StandingsRail implements IUpdatable {
 
         this.fleaHead = game.add.sprite(0, 0, fleaKey);
         this.fleaHead.x = this.HORIZONTAL_BUFFER - this.fleaHead.width / 2;
-        this.fleaHead.y = game.height - this.VERTICAL_BUFFER - this.tileHeight / 2 - this.fleaHead.height * 1/2;
+        this.fleaHead.y = this.VERTICAL_BUFFER + this.tileHeight / 2 - this.fleaHead.height * 1/2;
         this.fleaHead.fixedToCamera = true;
 
         this.playerHead = game.add.sprite(0, 0, playerKey);
         this.playerHead.x = this.HORIZONTAL_BUFFER - this.playerHead.width / 2;
-        this.playerHead.y = game.height - this.VERTICAL_BUFFER - this.tileHeight / 2 - this.playerHead.height * 1/2;
+        this.playerHead.y = this.VERTICAL_BUFFER + this.tileHeight / 2 - this.playerHead.height * 1/2;
         this.playerHead.fixedToCamera = true;
     }
 
