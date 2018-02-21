@@ -84,8 +84,8 @@ export class EventOne implements GameScene {
 
 
         this.PLATFORM_HEIGHT = 128;
-        this.PILLAR_FIELD_SHADOW_ANGLE = 30 * Math.PI / 180;
-        this.PILLAR_CROWD_SHADOW_ANGLE = this.PILLAR_FIELD_SHADOW_ANGLE;
+        this.PILLAR_FIELD_SHADOW_ANGLE = 20 * Math.PI / 180;
+        this.PILLAR_CROWD_SHADOW_ANGLE = 30 * Math.PI / 180;;
 
         var a = this.game.cache.getImage("ground").height - this.PLATFORM_HEIGHT;
         this.lengthOfPillarFieldShadows = a / Math.cos(this.PILLAR_FIELD_SHADOW_ANGLE);
@@ -361,6 +361,7 @@ export class EventOne implements GameScene {
         this.player.render(this.graphics);
         this.graphics.beginFill(0x000000);
         this.graphics.fillAlpha = 0.5;
+        // TO DO: Convert these drawPolygon calls into simple sprites (renderTexture?)
         for (var i = 0; i < this.pillarFieldShadows.length; i++) {
             this.graphics.drawPolygon(this.pillarFieldShadows[i].points);
             this.graphics.drawPolygon(this.pillarWallShadows[i].points);
