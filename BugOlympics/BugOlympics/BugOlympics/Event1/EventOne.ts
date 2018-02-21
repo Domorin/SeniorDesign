@@ -49,11 +49,16 @@ export class EventOne implements GameScene {
 
     PLATFORM_HEIGHT: number;
 
-    PILLAR_SHADOW_ANGLE: number;
-    LENGTH_OF_PILLAR_FIELD_SHADOWS: number;
-    NUM_OF_FIELD_PILLAR_SHADOWS: number;
+    PILLAR_FIELD_SHADOW_ANGLE: number;
+    PILLAR_CROWD_SHADOW_ANGLE: number;
+    lengthOfPillarFieldShadows: number;
+    lengthOfPillarCrowdShadows: number;
+    WALL_HEIGHT: number;
+    CROWD_HEIGHT: number;
 
-    shadowPolygons: Phaser.Polygon[];
+    pillarFieldShadows: Phaser.Polygon[];
+    pillarWallShadows: Phaser.Polygon[];
+    pillarCrowdShadows: Phaser.Polygon[];
 
     constructor() {
         this.game = new Phaser.Game(1024, 768, Phaser.AUTO, 'content', this);
@@ -72,13 +77,21 @@ export class EventOne implements GameScene {
     }
 
     create() {
+        // TO DO: Make wall and crowd sprites separate
+        this.WALL_HEIGHT = 68;
+        this.CROWD_HEIGHT = this.game.cache.getImage("crowd").height - this.WALL_HEIGHT;
+
+
+
         this.PLATFORM_HEIGHT = 128;
-        this.PILLAR_SHADOW_ANGLE = 30 * Math.PI / 180;
+        this.PILLAR_FIELD_SHADOW_ANGLE = 30 * Math.PI / 180;
+        this.PILLAR_CROWD_SHADOW_ANGLE = this.PILLAR_FIELD_SHADOW_ANGLE;
 
         var a = this.game.cache.getImage("ground").height - this.PLATFORM_HEIGHT;
-        this.LENGTH_OF_PILLAR_FIELD_SHADOWS = a / Math.cos(this.PILLAR_SHADOW_ANGLE);
+        this.lengthOfPillarFieldShadows = a / Math.cos(this.PILLAR_FIELD_SHADOW_ANGLE);
+        this.lengthOfPillarCrowdShadows = this.WALL_HEIGHT / Math.cos(this.PILLAR_CROWD_SHADOW_ANGLE);
 
-        console.log(this.LENGTH_OF_PILLAR_FIELD_SHADOWS);
+        console.log(this.lengthOfPillarFieldShadows);
 
 
         this.initialCutscene = true;
@@ -228,9 +241,12 @@ export class EventOne implements GameScene {
     }
 
     createPillars(pillarTileHeight: number, pillarTileWidth: number) {
-        this.shadowPolygons = new Array(this.numberOfScreens + 1);
+        var numOfPillars = this.numberOfScreens + 1;
+        this.pillarFieldShadows = new Array(numOfPillars);
+        this.pillarWallShadows = new Array(numOfPillars);
+        this.pillarCrowdShadows = new Array(numOfPillars);
         // Do not have a pillar on the last screen
-        for (var i = 0; i < this.numberOfScreens+1; i++) {
+        for (var i = 0; i < numOfPillars; i++) {
             var x = this.randomIntFromInterval(this.pillarMinSpawnX, this.pillarMaxSpawnX) + (i * this.game.width);
             var holeY = this.randomIntFromInterval(this.pillarMinHoleY, this.pillarMaxHoleY);
             var holeSize = this.randomIntFromInterval(this.pillarMinHoleSize, this.pillarMaxHoleSize);
@@ -238,32 +254,13 @@ export class EventOne implements GameScene {
             console.log("X: ", x);
             console.log("Hole Y:", holeY);
             console.log("Hole Size:", holeSize);
-            this.createPillar(x, holeY, holeSize, pillarTileHeight, pillarTileWidth);
-            var endY = this.worldDimensions.y - this.PLATFORM_HEIGHT;
-
-            var x1 = x;
-            var y1 = endY;
-            var p1: Phaser.Point = new Phaser.Point(x1, y1);
-
-            var x2 = x + pillarTileWidth;
-            var y2 = endY;
-            var p2: Phaser.Point = new Phaser.Point(x2, y2);
-
-            var x3 = x + Math.sin(this.PILLAR_SHADOW_ANGLE) * (this.LENGTH_OF_PILLAR_FIELD_SHADOWS);
-            var y3 = this.worldDimensions.y - this.game.cache.getImage("ground").height;
-            var p3: Phaser.Point = new Phaser.Point(x3, y3);
-
-            var x4 = x + pillarTileWidth + Math.sin(this.PILLAR_SHADOW_ANGLE) * (this.LENGTH_OF_PILLAR_FIELD_SHADOWS);
-            var y4 = this.worldDimensions.y - this.game.cache.getImage("ground").height;
-            var p4: Phaser.Point = new Phaser.Point(x4, y4);
-
-            this.shadowPolygons[i] = new Phaser.Polygon([p1, p2, p4, p3]);
+            this.createPillar(x, holeY, holeSize, pillarTileHeight, pillarTileWidth, i);
         }
     }
 
 
 
-    createPillar(x: number, holeY: number, holeSize: number, pillarTileHeight: number, width: number) {       
+    createPillar(x: number, holeY: number, holeSize: number, pillarTileHeight: number, width: number, shadowIndex: number) {       
 
         var endY = this.worldDimensions.y - this.PLATFORM_HEIGHT;
         for (var curHeight = this.worldDimensions.y - this.game.height; curHeight < endY; curHeight += pillarTileHeight) {
@@ -271,9 +268,43 @@ export class EventOne implements GameScene {
             if (curHeight >= holeLocation && curHeight < holeLocation + holeSize) {
                 curHeight = holeLocation + holeSize;
             }
-            this.pillars.create(x, curHeight, 'pillarTile');            
+            this.pillars.create(x, curHeight, 'pillarTile');
         }
 
+        // SHADOWS
+
+        var x1 = x;
+        var y1 = endY;
+        var p1: Phaser.Point = new Phaser.Point(x1, y1);
+
+        var x2 = x + width;
+        var y2 = endY;
+        var p2: Phaser.Point = new Phaser.Point(x2, y2);
+
+        var x3 = x + Math.sin(this.PILLAR_FIELD_SHADOW_ANGLE) * (this.lengthOfPillarFieldShadows);
+        var y3 = this.worldDimensions.y - this.game.cache.getImage("ground").height;
+        var p3: Phaser.Point = new Phaser.Point(x3, y3);
+
+        var x4 = x + width + Math.sin(this.PILLAR_FIELD_SHADOW_ANGLE) * (this.lengthOfPillarFieldShadows);
+        var y4 = this.worldDimensions.y - this.game.cache.getImage("ground").height;
+        var p4: Phaser.Point = new Phaser.Point(x4, y4);
+
+        this.pillarFieldShadows[shadowIndex] = new Phaser.Polygon([p1, p2, p4, p3]);
+
+        var p5: Phaser.Point = new Phaser.Point(x3, y3 - this.WALL_HEIGHT);
+        var p6: Phaser.Point = new Phaser.Point(x4, y4 - this.WALL_HEIGHT);
+
+        this.pillarWallShadows[shadowIndex] = new Phaser.Polygon([p3, p4, p6, p5]);
+
+        var x7 = p5.x + Math.sin(this.PILLAR_CROWD_SHADOW_ANGLE) * this.lengthOfPillarCrowdShadows;
+        var y7 = p5.y - this.CROWD_HEIGHT;
+        var p7: Phaser.Point = new Phaser.Point(x7, y7);
+
+        var x8 = p6.x + Math.sin(this.PILLAR_CROWD_SHADOW_ANGLE) * this.lengthOfPillarCrowdShadows;
+        var y8 = p6.y - this.CROWD_HEIGHT;
+        var p8: Phaser.Point = new Phaser.Point(x8, y8);
+
+        this.pillarCrowdShadows[shadowIndex] = new Phaser.Polygon([p5, p6, p8, p7]);
 
     }
 
@@ -328,10 +359,15 @@ export class EventOne implements GameScene {
     render() {
         this.graphics.clear()        
         this.player.render(this.graphics);
-        this.graphics.beginFill(0x000000, 0x888888);
-        for (var i = 0; i < this.shadowPolygons.length; i++) {
-            this.graphics.drawPolygon(this.shadowPolygons[i].points);
+        this.graphics.beginFill(0x000000);
+        this.graphics.fillAlpha = 0.5;
+        for (var i = 0; i < this.pillarFieldShadows.length; i++) {
+            this.graphics.drawPolygon(this.pillarFieldShadows[i].points);
+            this.graphics.drawPolygon(this.pillarWallShadows[i].points);
+            this.graphics.drawPolygon(this.pillarCrowdShadows[i].points);
         }
+        // end fill puts shadows in front??
+        this.graphics.endFill();
 }
 
 }
