@@ -15,7 +15,7 @@ var group;
 
 function create() {
 
-    game.add.tileSprite(0, 0, 800, 600, 'background');
+    game.add.tileSprite(0, 0, 1920, 1920, 'background');
 
     game.world.setBounds(0, 0, 800, 600);
 
@@ -115,7 +115,7 @@ function processHandler1 (test, veg) {
 
 function collisionHandler1 (test, veg) {
 
-	    if (veg.frame == 17)
+	    if (veg.frame == 18)
 	    {
 	        veg.kill();
 	    }
