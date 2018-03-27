@@ -4,21 +4,95 @@
 	<meta charset="utf-8" />
 	<title>Level Select Screen</title>
 	<style> body { margin: 0; background: #B4D9E7; } </style>
-	<script src="phaser-2.0.6.min.js"></script>
+	<script src="require.js"></script>
+	<script src="phaser.min.js"></script>	
 	<script src="levelselect.js"></script>
-	<script src="maingame.js"></script>
+	<script src="Event1/main.js"></script>
 </head>
 <body>
 <script>
 (function() {
 	// initialize the framework
+
 	var game = new Phaser.Game(CANVAS_WIDTH, CANVAS_HEIGHT, Phaser.CANVAS, 'game');
 	// add game states
 	game.state.add('levsel', LevelSelect); // note: first parameter is only the name used to refer to the state
-	game.state.add('game', MainGame);
+	require(['Event1/EventOne'], function (EventOneClass) {
+                game.state.add(1, EventOneClass.EventOne);
+        });
 	// start the boot state
 	game.state.start('levsel');
+
 })();
+
+AddPauseMenu = function(game) {    
+
+	w = CANVAS_WIDTH;
+	h = CANVAS_HEIGHT;
+
+	pause_label = game.add.text(5, 10, 'Pause', { font: '24px Arial', fill: '#fff' });
+	pause_label.inputEnabled = true;
+	pause_label.fixedToCamera = true;
+
+	pause_label.events.onInputUp.add(function () {
+        // When the paus button is pressed, we pause the game
+
+        // Then add the menu
+        menu = game.add.sprite(game.camera.x + w/2, game.camera.y + h/3, 'menu');
+        menu.anchor.setTo(0.5, 0.5);
+
+        game.paused = true;
+
+        // And a label to illustrate which menu item was chosen. (This is not necessary)
+        choiceLabel = game.add.text(game.camera.x + w/2, game.camera.y + h/3 + 100, 'Click outside menu to continue', { font: '24px Arial', fill: '#fff' });
+        choiceLabel.anchor.setTo(0.5, 0.5);
+    });
+
+    // Add a input listener that can help us return from being paused
+    game.input.onDown.add(unpause, self);
+
+    // And finally the method that handels the pause menu
+    function unpause(event){
+        // Only act if paused
+        if(game.paused){
+            // Calculate the corners of the menu
+            var x1 = w/2 - 341/2, x2 = w/2 + 341/2,
+                y1 = h/3 - 128/2, y2 = h/3 + 128/2;
+
+            // Check if the click was inside the menu
+            if(event.x > x1 && event.x < x2 && event.y > y1 && event.y < y2 ){
+                // The choicemap is an array that will help us see which item was clicked
+                var choicemap = ['Retry', 'Menu']
+
+                // Get menu local coordinates for the click
+                var x = event.x - x1,
+                    y = event.y - y1;
+
+                // Calculate the choice 
+                var choice = Math.floor(x / (341/2))
+
+                // Display the choice
+                if(choicemap[choice] == 'Retry') {
+                	game.state.start(game.state.current);
+                	game.paused = false;
+                } else if (choicemap[choice] == 'Menu') {
+                	game.state.start('levsel');
+                	game.paused = false;
+                }
+            }
+            else{
+                // Remove the menu and the label
+                menu.destroy();
+                choiceLabel.destroy();
+
+                // Unpause the game
+                game.paused = false;
+            }
+        }
+    };
+	return pause_label;
+}
+
 </script>
 </body>
 </html>

@@ -167,7 +167,7 @@ LevelSelect.prototype = {
 				.start();
 				
 			// it's a little tricky to pass selected levelnr to callback function, but this works:
-			tween._lastChild.onComplete.add(function(){this.onLevelSelected(sprite.health);}, this);
+			tween.onComplete.add(function(){this.onLevelSelected(sprite.health);}, this);
 		};
 	},
 
@@ -185,10 +185,7 @@ LevelSelect.prototype = {
 		};
 	},
 
-	onLevelSelected: function(levelnr) {
-		// pass levelnr variable to 'Game' state
-		this.game.state.states['game']._levelNumber = levelnr;
-		
-		this.state.start('game');
+	onLevelSelected: function(levelnr) {		
+		this.state.start(levelnr);
 	}
 };

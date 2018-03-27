@@ -61,7 +61,7 @@ export class EventOne implements GameScene {
     pillarCrowdShadows: Phaser.Polygon[];
 
     constructor() {
-        this.game = new Phaser.Game(1024, 768, Phaser.AUTO, 'content', this);
+        this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'content', this);
     }
 
     preload() {
@@ -237,7 +237,7 @@ export class EventOne implements GameScene {
     createFlea() {
         var fleaSprite = this.game.add.sprite(this.fleaSpawnPoint.x, this.fleaSpawnPoint.y, 'flea');
         this.game.physics.arcade.enable(fleaSprite);
-        this.flea = new Flea(fleaSprite, this.game.time.create(false));
+        this.flea = new Flea(fleaSprite, this.game.time.create(false), this.game.width);
     }
 
     createPillars(pillarTileHeight: number, pillarTileWidth: number) {

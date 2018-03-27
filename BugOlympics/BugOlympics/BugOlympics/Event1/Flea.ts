@@ -2,7 +2,7 @@
 
 export class Flea implements IUpdatable, IRenderable {
 
-    constructor(sprite: Phaser.Sprite, timer: Phaser.Timer) {
+    constructor(sprite: Phaser.Sprite, timer: Phaser.Timer, leapDistance: number) {
         this.initialCutscene = true;
 
         this.sprite = sprite;
@@ -22,6 +22,9 @@ export class Flea implements IUpdatable, IRenderable {
         this.leaping = false;
 
         this.cutsceneEndedSignal = new Phaser.Signal();
+
+        this.LEAP_DISTANCE = leapDistance;
+        
     }
 
     cutsceneEndedSignal: Phaser.Signal;
@@ -38,6 +41,8 @@ export class Flea implements IUpdatable, IRenderable {
     HOP_MAX_VELOCITY: number = 75
     HOP_DELAY: number = 1000;
     currentHops: number = 0;
+
+    LEAP_DISTANCE: number;
 
     X_LEAP_VELOCITY: number = 200;
 
@@ -67,7 +72,7 @@ export class Flea implements IUpdatable, IRenderable {
     leap() {
         this.leaping = true;
 
-        var time: number = 1024 / this.X_LEAP_VELOCITY;
+        var time: number = this.LEAP_DISTANCE / this.X_LEAP_VELOCITY;
         var yVelocity: number = 1 / 2 * time * -this.GRAVITY;
         this.sprite.body.velocity.y = yVelocity;
         this.sprite.body.velocity.x = this.X_LEAP_VELOCITY;
