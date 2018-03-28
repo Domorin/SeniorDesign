@@ -1,8 +1,8 @@
 // -------------------------------------
 // START THE GAME
 // -------------------------------------
-var CANVAS_WIDTH = 800;
-var CANVAS_HEIGHT = 600;
+var CANVAS_WIDTH = 1024;
+var CANVAS_HEIGHT = 768;
 
 var PLAYER_DATA = null; // just declare as global variable for now
 
@@ -23,7 +23,7 @@ LevelSelect.prototype = {
 
 	create: function() {
 		this.game.stage.backgroundColor = 0x80a0ff;
-		this.game.add.bitmapText(256, 24, 'font72', 'Select a level!', 48);
+		this.game.add.bitmapText(340, 24, 'font72', 'Select a level!', 48);
 
 		this.createLevelIcons();
 		this.animateLevelIcons();
@@ -60,8 +60,8 @@ LevelSelect.prototype = {
 	createLevelIcons: function() {
 		var levelnr = 0;
 
-		for (var y=0; y < 3; y++) {
-			for (var x=0; x < 4; x++) {
+		for (var y=1; y < 2; y++) {
+			for (var x=0; x < 5; x++) {
 				// next level
 				levelnr = levelnr + 1;
 				
@@ -79,7 +79,7 @@ LevelSelect.prototype = {
 				var playdata = PLAYER_DATA[levelnr-1];
 
 				// decide which icon
-				var isLocked = true; // locked
+				var isLocked = false; // locked
 				var stars = 0; // no stars
 				
 				// check if level is unlocked
@@ -89,8 +89,8 @@ LevelSelect.prototype = {
 				};
 
 				// calculate position on screen
-				var xpos = 160 + (x*128);
-				var ypos = 120 + (y*128);
+				var xpos = 124 + (x*155.2);
+				var ypos = 300;
 				
 				// create icon
 				this.holdicons[levelnr-1] = this.createLevelIcon(xpos, ypos, levelnr, isLocked, stars);
