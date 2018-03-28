@@ -8,6 +8,7 @@
 	<script src="phaser.min.js"></script>	
 	<script src="levelselect.js"></script>
 	<script src="Event1/main.js"></script>
+	<script src="Event5/event5.js"></script>
 </head>
 <body>
 <script>
@@ -20,6 +21,7 @@
 	require(['Event1/EventOne'], function (EventOneClass) {
                 game.state.add(1, EventOneClass.EventOne);
         });
+	game.state.add(5, EventFive);
 	// start the boot state
 	game.state.start('levsel');
 

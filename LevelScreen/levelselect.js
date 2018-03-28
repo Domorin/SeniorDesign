@@ -64,16 +64,11 @@ LevelSelect.prototype = {
 			for (var x=0; x < 5; x++) {
 				// next level
 				levelnr = levelnr + 1;
-				
-				// check if array not yet initialised
-				if (typeof PLAYER_DATA[levelnr-1] !== 'number') {
-					// value is null or undefined, i.e. array not defined or too short between app upgrades with more levels
-					if (levelnr == 1) {
-						PLAYER_DATA[levelnr-1] = 0; // level 1 should never be locked
-					} else {
-						PLAYER_DATA[levelnr-1] = -1;
-					};
-				};
+
+				console.log("levelnum: " + levelnr);
+				console.log(PLAYER_DATA[levelnr-1]);
+
+				PLAYER_DATA[levelnr-1] = 0;
 
 				// player progress info for this level
 				var playdata = PLAYER_DATA[levelnr-1];
@@ -146,6 +141,7 @@ LevelSelect.prototype = {
 		var levelnr = sprite.health;
 
 		if (PLAYER_DATA[levelnr-1] < 0) {
+			console.log(levelnr, PLAYER_DATA[levelnr-1]);
 			// indicate it's locked by shaking left/right
 			var IconGroup = this.holdicons[levelnr-1];
 			var xpos = IconGroup.xOrg;
