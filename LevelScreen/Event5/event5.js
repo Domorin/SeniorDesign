@@ -1,23 +1,23 @@
-var currentGame;
+var game;
 
-EventFive = function(game){
+EventFive = function(currentGame){
     this.game = game;
-    currentGame = game;
+    game = currentGame;
 };
 
     EventFive.prototype = {
         preload: function() {
-            preload(currentGame);
+            preload();
         },
         create: function() {
-            create(currentGame);
+            create();
         },
         update: function() {
-            update(currentGame);
+            update();
         },
     };
         
-        function preload (game) {
+        function preload () {
             //game.stage.backgroundColor = '#85b5e1';
             game.load.baseURL = '';
             game.load.image('background', 'Assets/sky.png');
@@ -47,7 +47,7 @@ EventFive = function(game){
         var spriteHeight = 60;
        
         
-        function create(game) {
+        function create() {
             game.add.tileSprite(-20,0,1044,768,'background');
             
             text = game.add.text(game.world.centerX,    game.world.centerY*0.22, '0:00', { font: "64px Lucida Sans", fill: "#ffffff", align: "center" });
@@ -160,7 +160,7 @@ EventFive = function(game){
                 text.setText("You Scored " + counter + "!");
             }
         }           
-        function update (game) {
+        function update () {
             game.debug.geom(line);
             //game.debug.lineInfo(line, 32, 32);
             
