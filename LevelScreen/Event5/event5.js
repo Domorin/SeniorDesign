@@ -22,13 +22,13 @@
             function preload () {
                 //game.stage.backgroundColor = '#85b5e1';
                 game.load.baseURL = '';
-                game.load.image('background', 'Assets/sky.png');
-                game.load.image('player', 'Assets/phaser-dude.png');
-                game.load.image('teammate', 'Assets/phaser-dude.png');
-                game.load.image('player2', 'Assets/slime.png');
-                game.load.image('platform', 'Assets/platform.png');
-                game.load.image('redFlag', 'Assets/redflag.png');
-                game.load.image('blueFlag', 'Assets/blueflag.png');
+                game.load.image('background', 'event5/Assets/sky.png');
+                game.load.image('player', 'event5/Assets/phaser-dude.png');
+                game.load.image('teammate', 'event5/Assets/phaser-dude.png');
+                game.load.image('player2', 'event5/Assets/slime.png');
+                game.load.image('platform', 'event5/Assets/platform.png');
+                game.load.image('redFlag', 'event5/Assets/redflag.png');
+                game.load.image('blueFlag', 'event5/Assets/blueflag.png');
                 game.load.image("menu", "content/menu.png", 341, 128)
                 
             }
@@ -50,6 +50,18 @@
            
             
             function create() {
+                // reset variables incase of retry
+                xVel = 80;
+                tugVel = -900;
+                start = true;
+                gameNotOver = true;
+                gameLost = false;
+                youWon = false;
+                antWon = false;
+                minutes = 0;
+                seconds = 0;
+
+
                 game.add.tileSprite(-20,0,1044,768,'background');
                 
                 text = game.add.text(game.world.centerX,    game.world.centerY*0.22, '0:00', { font: "64px Lucida Sans", fill: "#ffffff", align: "center" });

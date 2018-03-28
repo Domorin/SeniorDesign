@@ -8,6 +8,7 @@
 	<script src="phaser.min.js"></script>	
 	<script src="levelselect.js"></script>
 	<script src="Event1/main.js"></script>
+	<script src="Event2/event2.js"></script>
 	<script src="Event4/event4.js"></script>
 	<script src="Event5/event5.js"></script>
 </head>
@@ -22,6 +23,7 @@
 	require(['Event1/EventOne'], function (EventOneClass) {
                 game.state.add(1, EventOneClass.EventOne);
         });
+	game.state.add(2, EventTwo);
 	game.state.add(4, EventFour);
 	game.state.add(5, EventFive);
 	// start the boot state
@@ -34,7 +36,9 @@ AddPauseMenu = function(game) {
 	w = CANVAS_WIDTH;
 	h = CANVAS_HEIGHT;
 
-	pause_label = game.add.text(5, 10, 'Pause', { font: '24px Arial', fill: '#fff' });
+	console.log(w, h);
+
+	pause_label = game.add.text(w-75, h-30, 'Pause', { font: '24px Arial', fill: '#fff' });
 	pause_label.inputEnabled = true;
 	pause_label.fixedToCamera = true;
 
