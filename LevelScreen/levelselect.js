@@ -65,8 +65,6 @@ LevelSelect.prototype = {
 				// next level
 				levelnr = levelnr + 1;
 
-				console.log("levelnum: " + levelnr);
-				console.log(PLAYER_DATA[levelnr-1]);
 
 				PLAYER_DATA[levelnr-1] = 0;
 
@@ -181,7 +179,7 @@ LevelSelect.prototype = {
 		};
 	},
 
-	onLevelSelected: function(levelnr) {		
+	onLevelSelected: function(levelnr) {
 		this.state.start(levelnr);
 	}
 };
