@@ -27,6 +27,9 @@ LevelSelect.prototype = {
 
 		this.createLevelIcons();
 		this.animateLevelIcons();
+
+		DisplayBugFact(this.game, 600);
+
 	},
 
 	update: function() {

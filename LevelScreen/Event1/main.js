@@ -381,6 +381,8 @@ define("Event1/EventOne", ["require", "exports", "Event1/Player", "Event1/Flea",
             this.game.time.events.loop(Phaser.Timer.SECOND, this.updateTimer, this);
 
             AddPauseMenu(this.game);
+            DisplayBugFact(this.game, this.game.width/2, 3*this.game.height/4);                  
+
         };
         EventOne.prototype.updateTimer = function () {
             this.secondsElapsed++;
@@ -414,6 +416,8 @@ define("Event1/EventOne", ["require", "exports", "Event1/Player", "Event1/Flea",
             this.endText.visible = true;
             this.score.visible = false;
             this.player.sprite.events.destroy();
+            DisplayBugFact(this.game, this.game.width/2, 3*this.game.height/4); 
+
         };
         EventOne.prototype.calculateScore = function () {
         };

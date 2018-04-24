@@ -103,6 +103,64 @@ AddPauseMenu = function(game) {
 	return pause_label;
 }
 
+var BugFacts = 
+    [
+        "Some beetles can drag 120 times their weight.",
+        "Insects have their skeletons on the outside of their body.",
+        "Often, insects smell through their antennae.",
+        "Some butterflies have taste buds on their feet.",
+        "Some insects can walk on water.",
+        "Male mosquitoes do not bite humans.",
+        "Carpenter Ants are black and nest in wood.",
+        "A cockroach can live 9 days without its head.",
+        "Aphids harm plants by sucking sap from the plant.",
+        "House flies spread germs with their feet.",
+        "Mosquitos give itchy bites and are eaten by bats.",
+        "It takes 2,000-3,000 honeybees working all day to collect nectar to make one pound of honey.",
+        "Spiders eat aphids and other insect pests.",
+        "A butterfly’s body needs to be 86 degrees or higher to fly.",
+        "Earthworms are one of a farmer’s best friends by improving soil.",
+        "A Praying Mantis hides by flowers to capture the insects that feed on nectar and pollen."
+    ]
+
+DisplayBugFact = function(game, y) {
+    var fact = "Did you know? " + BugFacts[Math.floor(Math.random() * BugFacts.length)];
+    var x = game.width/2;
+
+    var fontSize = 20;
+    var style2 = { font: "bold 20px Arial", fill: "#fff", boundsAlignH: "left", boundsAlignV: "top" };
+
+    var bar = game.add.graphics();
+    var bugFact = game.add.text(0, 0, fact, style2);    
+
+
+    // Programatically reduce font size until it fits on screen
+    while(bugFact.width > game.width * 0.9) {
+        fontSize--;
+        bugFact.cssFont = "bold " + fontSize + "px Arial";
+    }   
+
+    bugFact.x = x - bugFact.width / 2;
+    bugFact.y = game.height + bugFact.height * 2;
+    bugFact.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);
+    bugFact.fixedToCamera = true;
+    bugFact.alpha = 1;
+
+    bar.beginFill(0x000000, 0.5);
+    bar.drawRect(0, bugFact.y, game.width, bugFact.height);
+    bar.fixedToCamera = true;
+
+    console.log(x, y);
+
+    // tween animation
+    var tweenY = y
+
+    textTween = game.add.tween(bugFact.cameraOffset);
+    textTween.to({ y : tweenY - bugFact.height / 2 }, 1050, Phaser.Easing.Bounce.Out, true, 0);
+    barTween = game.add.tween(bar.cameraOffset);
+    barTween.to({ y :  -bugFact.y + tweenY - bugFact.height / 2 }, 1000, Phaser.Easing.Bounce.Out, true, 0);
+}
+
 </script>
 </body>
 </html>

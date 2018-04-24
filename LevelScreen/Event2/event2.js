@@ -94,9 +94,9 @@ function create() {
     //player.animations.add('wiggle', [1,8], 10, true);
 
     //  The score & timer
-    flapsText = game.add.text(16, 16, 'Flaps: 0', { fontSize: '32px', fill: '#000' });
-    bflapsText = game.add.text(w-215, 16, 'Bug Flaps: 0', { fontSize: '32px', fill: '#000' });
-    timeText = game.add.text(w/2-75, 16, 'Time left: 0', { fontSize: '32px', fill: '#000' });
+    flapsText = game.add.text(16, 16, 'Flaps: 0', { fontSize: '26px', fill: '#000' });
+    bflapsText = game.add.text(w-215, 16, 'Bug Flaps: 0', { fontSize: '26px', fill: '#000' });
+    timeText = game.add.text(w/2-75, 16, 'Time left: 0', { fontSize: '26px', fill: '#000' });
 	running = true;
 	timer = game.time.create(false);
 	// Timer in ms
@@ -191,8 +191,8 @@ function update() {
 function gameover() {
 	
 	running = false;
-	game.add.text(w/2-75, h/2-100, 'Total Flaps: ' + flaps, { fontSize: '64px', fill: '#F00' });
-	game.add.text(w/2-125, h/2-50, 'Total Bug Flaps: ' + bflaps.toFixed(0), { fontSize: '64px', fill: '#F00' });
+	game.add.text(w/2-175, h/2-100, 'Total Flaps: ' + flaps, { fontSize: '48px', fill: '#F00' });
+	game.add.text(w/2-250, h/2-50, 'Total Bug Flaps: ' + bflaps.toFixed(0), { fontSize: '48px', fill: '#F00' });
 	
 }
 

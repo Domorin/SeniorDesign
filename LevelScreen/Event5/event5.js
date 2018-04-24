@@ -61,6 +61,9 @@
                 minutes = 0;
                 seconds = 0;
 
+                var spriteWidth = 40;
+                var spriteHeight = 60;
+
 
                 game.add.tileSprite(-20,0,1044,768,'background');
                 
