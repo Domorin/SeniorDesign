@@ -11,6 +11,8 @@ export class EventOne implements GameScene {
     flea: Flea;
     standingsRail: StandingsRail;
 
+    secondsElapsed: number;
+
     camera: Phaser.Camera;
     game: Phaser.Game;
     graphics: Phaser.Graphics;
@@ -77,6 +79,8 @@ export class EventOne implements GameScene {
     }
 
     create() {
+        this.secondsElapsed = 0;
+
         // TO DO: Make wall and crowd sprites separate
         this.WALL_HEIGHT = 68;
         this.CROWD_HEIGHT = this.game.cache.getImage("crowd").height - this.WALL_HEIGHT;
@@ -188,6 +192,13 @@ export class EventOne implements GameScene {
         this.hasReachedEnd = false;
 
         this.createStandingsRail();
+
+        this.game.time.events.loop(Phaser.Timer.SECOND, this.updateTimer, this);
+
+    }
+
+    updateTimer() {
+        this.secondsElapsed++;
     }
 
     createField() {
@@ -213,10 +224,21 @@ export class EventOne implements GameScene {
 
     reachedEnd() {
         this.hasReachedEnd = true;
+        if (this.flea.reachedEnd) {
+            this.endText.text = "The flea wins!";
+        } else {
+            this.endText.text = "   You win!\n Score: " + (5*120 - 5*this.secondsElapsed);
+        }
         this.endText.visible = true;
         this.score.visible = false;
         this.player.sprite.events.destroy();
     }
+
+
+    calculateScore() {
+        
+    }
+
 
 
     endCutscene() {
@@ -354,10 +376,14 @@ export class EventOne implements GameScene {
                 this.score.text = this.player.currentScreen + "/" + this.numberOfScreens;
             }
         }
+
+        if (this.flea.sprite.x > this.worldDimensions.x - this.game.width) {
+            this.flea.reachedEnd = true;
+        }
     }
 
     render() {
-        this.graphics.clear()        
+        this.graphics.clear();
         this.player.render(this.graphics);
         this.graphics.beginFill(0x000000);
         this.graphics.fillAlpha = 0.5;

@@ -1,9 +1,12 @@
 ﻿import { Utils } from "Utils";
+import { EventOne } from "./EventOne";
 
 export class Flea implements IUpdatable, IRenderable {
 
     constructor(sprite: Phaser.Sprite, timer: Phaser.Timer, leapDistance: number) {
         this.initialCutscene = true;
+
+        this.reachedEnd = false;
 
         this.sprite = sprite;
         this.sprite.body.bounce.y = 0.2;
@@ -30,6 +33,8 @@ export class Flea implements IUpdatable, IRenderable {
     cutsceneEndedSignal: Phaser.Signal;
 
     initialCutscene: boolean;
+
+    reachedEnd: boolean;
 
     sprite: Phaser.Sprite;
     onGround: boolean;
@@ -62,7 +67,7 @@ export class Flea implements IUpdatable, IRenderable {
         this.sprite.body.velocity.y = -hopVelocity;
         var hopInterval: number = 2 * hopVelocity / this.GRAVITY * 1000;
         var funcToAdd = this.hop;
-        if (this.currentHops >= this.INITIAL_HOPS) {
+        if (this.currentHops >= this.INITIAL_HOPS && !this.reachedEnd) {
             funcToAdd = this.leap;
         }
         this.timer.add(hopInterval, funcToAdd, this);
@@ -95,6 +100,7 @@ export class Flea implements IUpdatable, IRenderable {
 
     update(scene: GameScene) {
         var fleaCollided: boolean = scene.game.physics.arcade.collide(this.sprite, scene.ground, this.hitPlatform, null, this);
+     
     }
 
 }

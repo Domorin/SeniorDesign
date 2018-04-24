@@ -51,7 +51,7 @@ define("Event1/chargeMeter", ["require", "exports"], function (require, exports)
         ChargeMeter.prototype.render = function (graphics) {
             if (this.player.beingDragged) {
                 if (this.player.chargeMeter.maxPower) {
-                    // Seizure warning				
+                    // Seizure warning              
                     graphics.beginFill((Math.random() * 0xFFFFFF));
                 }
                 else {
@@ -106,6 +106,7 @@ define("Event1/Player", ["require", "exports", "Event1/chargeMeter"], function (
             else {
                 this.changedScreens = false;
             }
+            console.log("UPDATING!");
             //  Collide the player with the platforms and pillars
             var hitPlatform = myScene.game.physics.arcade.collide(this.sprite, myScene.ground);
             var hitPillar = myScene.game.physics.arcade.collide(this.sprite, myScene.pillars);
@@ -132,6 +133,7 @@ define("Event1/Player", ["require", "exports", "Event1/chargeMeter"], function (
             }
         };
         Player.prototype.hitPlatform = function () {
+            console.log("hello?");
             this.sprite.body.velocity.x = 0;
             this.onGround = true;
         };
@@ -164,7 +166,7 @@ define("Event1/Flea", ["require", "exports", "Utils"], function (require, export
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     var Flea = (function () {
-        function Flea(sprite, timer) {
+        function Flea(sprite, timer, leapDistance) {
             this.GRAVITY = 300;
             this.INITIAL_HOPS = 5;
             this.HOP_MIN_VELOCITY = 125;
@@ -173,6 +175,7 @@ define("Event1/Flea", ["require", "exports", "Utils"], function (require, export
             this.currentHops = 0;
             this.X_LEAP_VELOCITY = 200;
             this.initialCutscene = true;
+            this.reachedEnd = false;
             this.sprite = sprite;
             this.sprite.body.bounce.y = 0.2;
             this.sprite.body.gravity.y = this.GRAVITY;
@@ -184,9 +187,11 @@ define("Event1/Flea", ["require", "exports", "Utils"], function (require, export
             this.startHop();
             this.leaping = false;
             this.cutsceneEndedSignal = new Phaser.Signal();
+            this.LEAP_DISTANCE = leapDistance;
         }
         Flea.prototype.startHop = function () {
             this.currentHops = 0;
+            console.log("STARITNG HOP!!");
             this.timer.start();
             this.timer.add(this.HOP_DELAY, this.hop, this);
         };
@@ -196,14 +201,14 @@ define("Event1/Flea", ["require", "exports", "Utils"], function (require, export
             this.sprite.body.velocity.y = -hopVelocity;
             var hopInterval = 2 * hopVelocity / this.GRAVITY * 1000;
             var funcToAdd = this.hop;
-            if (this.currentHops >= this.INITIAL_HOPS) {
+            if (this.currentHops >= this.INITIAL_HOPS && !this.reachedEnd) {
                 funcToAdd = this.leap;
             }
             this.timer.add(hopInterval, funcToAdd, this);
         };
         Flea.prototype.leap = function () {
             this.leaping = true;
-            var time = 1024 / this.X_LEAP_VELOCITY;
+            var time = this.LEAP_DISTANCE / this.X_LEAP_VELOCITY;
             var yVelocity = 1 / 2 * time * -this.GRAVITY;
             this.sprite.body.velocity.y = yVelocity;
             this.sprite.body.velocity.x = this.X_LEAP_VELOCITY;
@@ -279,9 +284,8 @@ define("Event1/StandingsRail", ["require", "exports"], function (require, export
 define("Event1/EventOne", ["require", "exports", "Event1/Player", "Event1/Flea", "Event1/StandingsRail"], function (require, exports, Player_1, Flea_1, StandingsRail_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-
     var EventOne = (function () {
-        function EventOne(game) {            
+        function EventOne(game) {
             this.game = game;
         }
         EventOne.prototype.preload = function () {
@@ -294,10 +298,10 @@ define("Event1/EventOne", ["require", "exports", "Event1/Player", "Event1/Flea",
             this.game.load.image('fleaHead', 'content/fleaHead.png');
             this.game.load.spritesheet('dude', 'content/dude.png', 32, 48);
             this.game.load.spritesheet('crowd', 'content/crowd.png', 505, 181);
-            this.game.load.image("menu", "content/menu.png", 341, 128)
+            this.game.load.image("menu", "content/menu.png", 341, 128);
         };
-        EventOne.prototype.create = function () {            
-
+        EventOne.prototype.create = function () {
+            this.secondsElapsed = 0;
             // TO DO: Make wall and crowd sprites separate
             this.WALL_HEIGHT = 68;
             this.CROWD_HEIGHT = this.game.cache.getImage("crowd").height - this.WALL_HEIGHT;
@@ -308,6 +312,7 @@ define("Event1/EventOne", ["require", "exports", "Event1/Player", "Event1/Flea",
             var a = this.game.cache.getImage("ground").height - this.PLATFORM_HEIGHT;
             this.lengthOfPillarFieldShadows = a / Math.cos(this.PILLAR_FIELD_SHADOW_ANGLE);
             this.lengthOfPillarCrowdShadows = this.WALL_HEIGHT / Math.cos(this.PILLAR_CROWD_SHADOW_ANGLE);
+            console.log(this.lengthOfPillarFieldShadows);
             this.initialCutscene = true;
             this.pillarMaxSpawnX = this.game.width * 9 / 10;
             this.pillarMinSpawnX = this.game.width / 2;
@@ -373,9 +378,12 @@ define("Event1/EventOne", ["require", "exports", "Event1/Player", "Event1/Flea",
             this.player.finishedSignal.add(this.reachedEnd, this);
             this.hasReachedEnd = false;
             this.createStandingsRail();
+            this.game.time.events.loop(Phaser.Timer.SECOND, this.updateTimer, this);
 
             AddPauseMenu(this.game);
-
+        };
+        EventOne.prototype.updateTimer = function () {
+            this.secondsElapsed++;
         };
         EventOne.prototype.createField = function () {
             var groundWidth = this.game.cache.getImage("ground").width;
@@ -397,9 +405,17 @@ define("Event1/EventOne", ["require", "exports", "Event1/Player", "Event1/Flea",
         };
         EventOne.prototype.reachedEnd = function () {
             this.hasReachedEnd = true;
+            if (this.flea.reachedEnd) {
+                this.endText.text = "The flea wins!";
+            }
+            else {
+                this.endText.text = "   You win!\n Score: " + (5 * 120 - 5 * this.secondsElapsed);
+            }
             this.endText.visible = true;
             this.score.visible = false;
             this.player.sprite.events.destroy();
+        };
+        EventOne.prototype.calculateScore = function () {
         };
         EventOne.prototype.endCutscene = function () {
             if (this.initialCutscene) {
@@ -417,7 +433,7 @@ define("Event1/EventOne", ["require", "exports", "Event1/Player", "Event1/Flea",
         EventOne.prototype.createFlea = function () {
             var fleaSprite = this.game.add.sprite(this.fleaSpawnPoint.x, this.fleaSpawnPoint.y, 'flea');
             this.game.physics.arcade.enable(fleaSprite);
-            this.flea = new Flea_1.Flea(fleaSprite, this.game.time.create(false));
+            this.flea = new Flea_1.Flea(fleaSprite, this.game.time.create(false), this.game.width);
         };
         EventOne.prototype.createPillars = function (pillarTileHeight, pillarTileWidth) {
             var numOfPillars = this.numberOfScreens + 1;
@@ -503,11 +519,15 @@ define("Event1/EventOne", ["require", "exports", "Event1/Player", "Event1/Flea",
                 if (this.game.camera.position.x >= desiredCameraLocation) {
                     this.playerSpawnPoint.x = this.game.width * this.player.currentScreen + 150;
                     // dont need to set this every frame
+                    console.log("CAMERA SET!!");
                     this.game.world.setBounds(this.game.width, 0, this.worldDimensions.x - this.game.width, this.worldDimensions.y);
                     this.game.camera.setPosition(desiredCameraLocation, this.worldDimensions.y - this.game.height);
                     this.cameraMoving = false;
                     this.score.text = this.player.currentScreen + "/" + this.numberOfScreens;
                 }
+            }
+            if (this.flea.sprite.x > this.worldDimensions.x - this.game.width) {
+                this.flea.reachedEnd = true;
             }
         };
         EventOne.prototype.render = function () {
@@ -532,6 +552,7 @@ define("app", ["require", "exports", "Event1/EventOne"], function (require, expo
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     window.onload = function () {
+        console.log("ON LOADING!");
         var game = new EventOne_1.EventOne();
     };
 });
