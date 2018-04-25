@@ -5,8 +5,9 @@
 	<title>Level Select Screen</title>
 	<style> body { margin: 0; background: #B4D9E7; } </style>
 	<script src="require.js"></script>
-	<script src="phaser.min.js"></script>	
-	<script src="levelselect.js"></script>
+	<script src="phaser.min.js"></script>
+    <script src="MainMenu/main.js"></script>	
+	<script src="levelselect.js"></script>    
 	<script src="Event1/main.js"></script>
 	<script src="Event2/event2.js"></script>
     <script src="Event3/event3.js"></script>
@@ -20,6 +21,7 @@
 
 	var game = new Phaser.Game(CANVAS_WIDTH, CANVAS_HEIGHT, Phaser.CANVAS, 'game');
 	// add game states
+    game.state.add('main', Main);
 	game.state.add('levsel', LevelSelect); // note: first parameter is only the name used to refer to the state
 	require(['Event1/EventOne'], function (EventOneClass) {
                 game.state.add(1, EventOneClass.EventOne);
@@ -29,7 +31,7 @@
 	game.state.add(4, EventFour);
 	game.state.add(5, EventFive);
 	// start the boot state
-	game.state.start('levsel');
+	game.state.start('main');
 
 })();
 
@@ -85,7 +87,9 @@ AddPauseMenu = function(game) {
                 	game.state.start(game.state.current);
                 	game.paused = false;
                 } else if (choicemap[choice] == 'Menu') {
-                	game.state.start('levsel');
+                    game.world.setBounds(1024, 768);
+                    game.camera.setPosition(0, 0);
+                	game.state.start('GameMenu');
                 	game.paused = false;
                 }
             }

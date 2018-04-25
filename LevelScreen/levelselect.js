@@ -16,14 +16,43 @@ LevelSelect.prototype = {
 
 	preload: function() {
 		this.game.load.spritesheet('levelselecticons', 'levelselecticons.png', 96, 96);
+		this.game.load.image('backArrow', 'backArrow.png');
 		this.game.load.bitmapFont('font72', 'font72.png', 'font72.xml'); // created with http://kvazars.com/littera/
 		
 		this.initProgressData();
 	},
 
 	create: function() {
+        this.game.world.setBounds(0, 0);
+        this.game.camera.setPosition(0, 0);
+
 		this.game.stage.backgroundColor = 0x80a0ff;
 		this.game.add.bitmapText(340, 24, 'font72', 'Select a level!', 48);
+
+		console.log(this.game.camera.x);
+		console.log("Y: " + this.game.camera.y);
+
+
+		var shadow = this.game.add.sprite(5, this.game.height - 105, 'backArrow');
+		shadow.scale.x = 0.5;
+		shadow.scale.y = 0.5;
+		shadow.tint = 0x000000;
+    	shadow.alpha = 0.6;
+
+		var arrow = this.game.add.sprite(10, this.game.height - 110, 'backArrow');
+		arrow.scale.x = 0.5;
+		arrow.scale.y = 0.5;
+
+
+
+		arrow.inputEnabled = true;
+
+		arrow.events.onInputDown.add((s) => {
+			this.backToMenu(s);
+		});
+
+
+
 
 		this.createLevelIcons();
 		this.animateLevelIcons();
@@ -58,6 +87,10 @@ LevelSelect.prototype = {
 				PLAYER_DATA = [];
 			};
 		};
+	},
+
+	backToMenu: function() {
+		this.state.start("GameMenu");
 	},
 
 	createLevelIcons: function() {
