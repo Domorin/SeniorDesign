@@ -8,6 +8,7 @@ function preload() {
 	game.load.spritesheet('ball', 'image/sprites/interference_ball_48x48.png', 48 ,48);
 	game.load.spritesheet('coin', 'image/sprites/coin.png', 32 ,32);
 	game.load.image('block', 'image/sprites/block.png', 5 ,5);
+	game.load.image('arrow', 'image/sprites/arrow.png',5,5);
 }
 
 var player;
@@ -28,7 +29,7 @@ function create() {
 	game.physics.startSystem(Phaser.Physics.P2JS);
 	
 	//add player
-    player = game.add.sprite(300, 500, 'player');
+    player = game.add.sprite(300, 600, 'player');
 
 	//enable player physics
     game.physics.arcade.enable(player);
@@ -44,54 +45,164 @@ function create() {
 	
 	player.body.mass = 100;
 	game.input.addPointer();
-	//add AI
-	//test = game.add.sprite(300, 500, 'mushroom');
 	
 	//enable AI
 	test = game.add.group();
 	test.enableBody = true;
 	test.physicsBodyType = Phaser.Physics.ARCADE;
-
-	
-	for (var y = 0; y < 1; y++)
-	    {
-	        for (var x = 0; x < 1; x++)
-	        {	
-				var tests = test.create(300, 500, 'mushroom')
-	            tests.name = 'mushroom' + x.toString() + y.toString();
-	           	tests.body.collideWorldBounds = true;
-			    tests.body.bounce.setTo(0.9,0.9);
-	            tests.body.velocity.x = 10 + Math.random()*100;
-				tests.body.velocity.y = 10 + Math.random()*100;
-			
-	        }
-		}
+	tests = test.create(300,750,'mushroom');
+	tests.body.collideWorldBounds = true;
+	tests.body.bounce.setTo(0.9,0.9);
+	game.physics.arcade.moveToXY(tests,800,630,100);
 	
 	//add obstacles 
 	group = game.add.physicsGroup();
 	group1 = game.add.physicsGroup();
-		//nondestructible
+	//nondestructible
 	    for (var i = 0; i < 10; i++)
 	    {
-	        var c = group.create(game.rnd.between(80, 90), game.rnd.between(50, 500), 'ball', 15);
+	        var c = group.create(game.rnd.between(200, 250), game.rnd.between(510, 530), 'ball',15);
 	        c.body.immovable= true;
 	    }
-		//destructible
 	    for (var i = 0; i < 10; i++)
 	    {
-	        var c = group.create(game.rnd.between(200, 400), game.rnd.between(60, 100), 'coin', 0);
+	        var c = group.create(game.rnd.between(750, 755), game.rnd.between(515, 520), 'ball',15);
+	        c.body.immovable= true;
+	    }
+	    for (var i = 0; i < 10; i++)
+	    {
+	        var c = group.create(game.rnd.between(200, 250), game.rnd.between(190, 200), 'ball',15);
+	        c.body.immovable= true;
+	    }
+	    for (var i = 0; i < 10; i++)
+	    {
+	        var c = group.create(game.rnd.between(750, 755), game.rnd.between(190,200), 'ball',15);
+	        c.body.immovable= true;
 	    }
 		
+	//bottom left corner
+		for (var i =0 ; i< 3; i++)
+		{
+			var c = group1.create(game.rnd.between(0,50),game.rnd.between(690,695),'block', 1);
+			c.body.immovable = true;
+		}
+		//bottom right corner
+		for (var i =0 ; i< 3; i++)
+		{
+			var c = group1.create(game.rnd.between(900,950),game.rnd.between(660,670),'block', 1);
+			c.body.immovable = true;
+		}
+		//bottom right corner
+		for (var i =0 ; i< 3; i++)
+		{
+			var c = group1.create(game.rnd.between(970,975),game.rnd.between(575,576),'block', 1);
+			c.body.immovable = true;
+		}
+		//top right corner
 		for (var i =0 ; i< 5; i++)
 		{
-			var c = group1.create(game.rnd.between(0,75),game.rnd.between(630,675),'block', 1);
+			var c = group1.create(game.rnd.between(980,985),game.rnd.between(70,90),'block', 1);
+			c.body.immovable = true;
+		}
+		for (var i =0 ; i< 5; i++)
+		{
+			var c = group1.create(game.rnd.between(900,950),game.rnd.between(10,30),'block', 1);
+			c.body.immovable = true;
+		}
+		//left right corner
+		for (var i =0 ; i< 5; i++)
+		{
+			var c = group1.create(game.rnd.between(0,50),game.rnd.between(20,30),'block', 1);
+			c.body.immovable = true;
+		}
+		for (var i =0 ; i< 5; i++)
+		{
+			var c = group1.create(game.rnd.between(0,50),game.rnd.between(10,30),'block', 1);
+			c.body.immovable = true;
+		}
+		//bottom row
+		for (var i =0 ; i< 1; i++)
+		{
+			var c = group1.create(game.rnd.between(300,301),game.rnd.between(500,501),'block', 1);
 			c.body.immovable = true;
 		}
 		for (var i =0 ; i< 1; i++)
 		{
-			var c = group1.create(game.rnd.between(700,700),game.rnd.between(200,400),'block', 1);
+			var c = group1.create(game.rnd.between(390,391),game.rnd.between(500,501),'block', 1);
 			c.body.immovable = true;
 		}
+		for (var i =0 ; i< 1; i++)
+		{
+			var c = group1.create(game.rnd.between(480,481),game.rnd.between(500,501),'block', 1);
+			c.body.immovable = true;
+		}
+		for (var i =0 ; i< 1; i++)
+		{
+			var c = group1.create(game.rnd.between(570,571),game.rnd.between(500,501),'block', 1);
+			c.body.immovable = true;
+		}
+		{
+			var c = group1.create(game.rnd.between(660,661),game.rnd.between(500,501),'block', 1);
+			c.body.immovable = true;
+		}
+		// rightside 
+		for (var i =0 ; i< 1; i++)
+		{
+			var c = group1.create(game.rnd.between(739,740),game.rnd.between(330,331),'block', 1);
+			c.body.immovable = true;
+		}
+		for (var i =0 ; i< 1; i++)
+		{
+			var c = group1.create(game.rnd.between(738,739),game.rnd.between(420,421),'block', 1);
+			c.body.immovable = true;
+		}
+		for (var i =0 ; i< 1; i++)
+		{
+			var c = group1.create(game.rnd.between(740,741),game.rnd.between(240,241),'block', 1);
+			c.body.immovable = true;
+		}
+		//top row
+		for (var i =0 ; i< 1; i++)
+		{
+			var c = group1.create(game.rnd.between(300,301),game.rnd.between(160,161),'block', 1);
+			c.body.immovable = true;
+		}
+		{
+			var c = group1.create(game.rnd.between(390,391),game.rnd.between(160,161),'block', 1);
+			c.body.immovable = true;
+		}
+		for (var i =0 ; i< 1; i++)
+		{
+			var c = group1.create(game.rnd.between(480,481),game.rnd.between(160,161),'block', 1);
+			c.body.immovable = true;
+		}
+		for (var i =0 ; i< 1; i++)
+		{
+			var c = group1.create(game.rnd.between(570,571),game.rnd.between(160,161),'block', 1);
+			c.body.immovable = true;
+		}
+		for (var i =0 ; i< 1; i++)
+		{
+			var c = group1.create(game.rnd.between(660,661),game.rnd.between(160,161),'block', 1);
+			c.body.immovable = true;
+		}
+		//left side
+		for (var i =0 ; i< 1; i++)
+		{
+			var c = group1.create(game.rnd.between(210,211),game.rnd.between(240,241),'block', 1);
+			c.body.immovable = true;
+		}
+		for (var i =0 ; i< 1; i++)
+		{
+			var c = group1.create(game.rnd.between(210,211),game.rnd.between(420,421),'block', 1);
+			c.body.immovable = true;
+		}
+		for (var i =0 ; i< 1; i++)
+		{
+			var c = group1.create(game.rnd.between(210,211),game.rnd.between(330,331),'block', 1);
+			c.body.immovable = true;
+		}
+		
 }
 
 function update() {
@@ -116,10 +227,11 @@ if (game.physics.arcade.collide(player, group1, collisionHandler3, processHandle
 	       }
 	 
 	 
-	   if (game.physics.arcade.collide(test, group1, collisionHandler4, processHandler4,this))
-	          {
-	              console.log('boom');
-	          }
+ if (game.physics.arcade.collide(test, group1, collisionHandler4, processHandler4,this))
+	       {
+	           console.log('boom');
+	       }
+  
 }
 
 
@@ -190,16 +302,6 @@ function collisionHandler4 (tests, veg) {
 	    }
 }
 
-
-function testOut(tests) {
-
-    //  Move the alien to the top of the screen again
-    tests.reset(x, this);
-
-    //  And give it a new random velocity
-    tests.body.velocity.x = 50 + Math.random() * 200;
-
-}
 function quit () {
 	
 	if (game.time.events == 0) {

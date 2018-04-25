@@ -21,7 +21,7 @@ Splash.prototype = {
   // varios freebies found from google image search
   loadImages: function () {
     game.load.image('menu-bg', 'assets/images/menu-bg2.png');
-    game.load.image('options-bg', 'assets/images/options-bg.jpg');
+    game.load.image('options-bg', 'assets/images/options1024x768.png');
     game.load.image('gameover-bg', 'assets/images/gameover-bg1.png');
   },
 
@@ -42,7 +42,7 @@ Splash.prototype = {
   },
 
   preload: function () {
-    game.add.sprite(0, 0, 'grass');
+    game.add.sprite(0, 0, 'grass1024x768');
     game.add.existing(this.logo).scale.setTo(0.5);
     game.add.existing(this.loadingBar);
     game.add.existing(this.status);
