@@ -39,7 +39,7 @@
 
 	    game.add.tileSprite(0, 0, 1920, 1920, 'background');
 
-	    game.world.setBounds(0, 0, 800, 600);
+	    game.world.setBounds(0, 0, 1024, 768);
 
 	    game.physics.startSystem(Phaser.Physics.P2JS);
 

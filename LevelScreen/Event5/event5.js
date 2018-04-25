@@ -47,6 +47,8 @@
             var background;
             var spriteWidth = 40;
             var spriteHeight = 60;
+
+            var factDisplayed = false;            
            
             
             function create() {
@@ -60,9 +62,13 @@
                 antWon = false;
                 minutes = 0;
                 seconds = 0;
+                factDisplayed = false;
 
                 var spriteWidth = 40;
                 var spriteHeight = 60;
+
+                game.world.width = 1024;
+                game.world.height = 768;
 
 
                 game.add.tileSprite(-20,0,1044,768,'background');
@@ -138,6 +144,7 @@
                 AddPauseMenu(game);
 
             }
+
             var flipFlop;
             var xVel = 80;
             var tugVel = -900;
@@ -172,9 +179,17 @@
                 }
                 if (gameLost) {
                     text.setText("The Other Team Won!");
+                    if(!factDisplayed) {
+                        factDisplayed = true;
+                        DisplayBugFact(game, 3*game.height/4);
+                    }
                 }
                 if (gameNotOver == false) {
                     text.setText("You Scored " + counter + "!");
+                    if(!factDisplayed) {
+                        DisplayBugFact(game, 3*game.height/4);
+                        factDisplayed = true;
+                    }
                 }
             }           
             function update () {

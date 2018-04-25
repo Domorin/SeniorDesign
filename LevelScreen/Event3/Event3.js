@@ -48,6 +48,9 @@
     minutes = 0;
     seconds = 0;
 
+    game.world.width = 1024;
+    game.world.height = 768;
+
     //  We're going to be using physics, so enable the Arcade Physics system
     game.physics.startSystem(Phaser.Physics.ARCADE);
 

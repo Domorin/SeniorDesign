@@ -49,6 +49,9 @@ function create() {
     bflaps = 0;
     face = 0;
 
+    game.world.width = 1024;
+    game.world.height = 768;
+
     //  We're going to be using physics, so enable the Arcade Physics system
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
@@ -193,6 +196,8 @@ function gameover() {
 	running = false;
 	game.add.text(w/2-175, h/2-100, 'Total Flaps: ' + flaps, { fontSize: '48px', fill: '#F00' });
 	game.add.text(w/2-250, h/2-50, 'Total Bug Flaps: ' + bflaps.toFixed(0), { fontSize: '48px', fill: '#F00' });
+
+    DisplayBugFact(game, 3*game.height/4);
 	
 }
 
