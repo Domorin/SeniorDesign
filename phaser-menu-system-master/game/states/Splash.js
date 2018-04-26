@@ -22,7 +22,7 @@ Splash.prototype = {
   loadImages: function () {
     game.load.image('menu-bg', 'assets/images/menu-bg2.png');
     game.load.image('options-bg', 'assets/images/options1024x768.png');
-    game.load.image('gameover-bg', 'assets/images/gameover-bg1.png');
+    game.load.image('gameover-bg', 'assets/images/gameover1024x768png.png');
   },
 
   loadFonts: function () {
