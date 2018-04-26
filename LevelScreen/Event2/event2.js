@@ -132,7 +132,7 @@ function update() {
     if (cursors.left.isDown && running)
     {
 		if (face != -1) {
-			player.body.velocity.y = -10;
+			player.body.velocity.y = -50;
 			flaps += 1;
 			flapsText.text = 'Flaps: ' + flaps;
 		}
@@ -143,7 +143,7 @@ function update() {
 	{
 		if (face != 1)
 		{
-			player.body.velocity.y = -10;
+			player.body.velocity.y = -50;
 			flaps += 1;
 			flapsText.text = 'Flaps: ' + flaps;
 		}
