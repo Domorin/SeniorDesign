@@ -47,7 +47,8 @@
             var background;
             var spriteWidth = 40;
             var spriteHeight = 60;
-
+            var graphicsLine;
+            var flag;
             var factDisplayed = false;            
            
             
@@ -80,6 +81,9 @@
                 game.time.events.loop(Phaser.Timer.SECOND, updateTimer, this);
                 
                 game.time.events.loop(33, updateScore, this);
+                
+                graphicsLine = game.add.graphics(0, 0);
+                flag = game.add.graphics(0,0);
                 
                 redFlag = game.add.sprite(game.world.width*0.27,game.world.height*0.82, 'redFlag');
                 
@@ -207,6 +211,15 @@
                 teammate.body.velocity.x = xVel;
                 player2.body.velocity.x = xVel;
                 teammate2.body.velocity.x = xVel;
+                
+                graphicsLine.clear();
+                flag.clear();
+                graphicsLine.lineStyle(4, 00000000, 1);
+                flag.lineStyle(7,33300000,1);
+                graphicsLine.moveTo(teammate2.x+10, teammate2.y+40);
+                flag.moveTo(teammate2.x+270, teammate2.y+40);
+                graphicsLine.lineTo(player2.x+10, player2.y+40);
+                flag.lineTo(player2.x-100, player2.y+40);
                 
                 line.setTo(teammate2.x, teammate2.y+40, player2.x+10, player2.y+40);
                 
