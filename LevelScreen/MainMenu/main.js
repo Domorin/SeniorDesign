@@ -15,7 +15,7 @@
 Main.prototype = {
 
   preload: function () {
-    game.load.image('grass',    'MainMenu/assets/images/grass1.png');
+    game.load.image('grass1024x768',    'MainMenu/assets/images/grass1024x768.png');
     game.load.image('loading',  'MainMenu/assets/images/loading.png');
     game.load.image('brand',    'MainMenu/assets/images/logo.jpg');
     game.load.script('polyfill',   'MainMenu/lib/polyfill.js');
