@@ -73,9 +73,9 @@ function create() {
 	test.physicsBodyType = Phaser.Physics.ARCADE;
 	tests = test.create(300,750,'mushroom');
 	tests.body.collideWorldBounds = true;
-	tests.body.bounce.setTo(0.4,0.4);
+	tests.body.bounce.setTo(0.7,0.7);
 	
-	game.physics.arcade.moveToXY(tests,200,200);
+	game.physics.arcade.moveToXY(tests,700,60,70, 10000);
 	//add obstacles 
 	group = game.add.physicsGroup();
 	group1 = game.add.physicsGroup();
