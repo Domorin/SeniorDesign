@@ -30,6 +30,7 @@
 	game.load.spritesheet('coin', 'Event4/image/sprites/coin.png', 32 ,32);
 	game.load.image('block', 'Event4/image/sprites/block.png', 5 ,5);
 	game.load.image('flectrum','Event4/image/sprites/flectrum.png');
+	game.load.image("menu", "content/menu.png", 341, 128)
 }
 
 var player;
@@ -246,6 +247,8 @@ function create() {
 			var c = group1.create(game.rnd.between(155,156),game.rnd.between(660,661),'block', 1);
 			c.body.immovable = true;
 		}
+
+		AddPauseMenu(game);
 }
 
 function update() {
@@ -277,8 +280,8 @@ if (game.physics.arcade.collide(player, group1, collisionHandler3, processHandle
 		   
  if (game.physics.arcade.collide(player, group2, collisionHandler3, processHandler3, this))
 		   {
-		          alert('You won!');
-				  location.reload();
+		          game.add.text(w/2-100, h/2-100, 'You won!', { fontSize: '48px', fill: '#FFFFFF' });
+		          DisplayBugFact(game, 3*game.height/4);
 		 
 		    }
  if (game.physics.arcade.collide(test, group2, collisionHandler4, processHandler4,this))
@@ -286,6 +289,10 @@ if (game.physics.arcade.collide(player, group1, collisionHandler3, processHandle
 		               console.log('boom');
 		    } 
   
+}
+
+function win() {
+
 }
 
 
