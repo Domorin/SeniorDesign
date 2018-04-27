@@ -48,7 +48,7 @@
     minutes = 0;
     seconds = 0;
 
-    game.world.width = 1024;
+    game.world.width = 6024;
     game.world.height = 768;
 
     //  We're going to be using physics, so enable the Arcade Physics system
@@ -57,8 +57,9 @@
     //  A simple background for our game
     game.add.sprite(0, 0, 'sky');
 
-    text = game.add.text(game.world.centerX*1.7,    game.world.centerY*0.16, '0:00', { font: "90px Arial", fill: "#ffffff", align: "center" });
-    text.anchor.setTo(0.5, 0.5);
+    text = game.add.text(800, 20, '0:00', { font: "90px Arial", fill: "#ffffff", align: "center" });
+    text.fixedToCamera = true;
+    text.cameraOffset.setTo(800, 20);
     game.time.events.loop(Phaser.Timer.SECOND, updateTimer, this);
     game.time.events.loop(33, updateScore, this);
 
@@ -78,7 +79,7 @@
     ground.body.immovable = true;
 
     // The player and its settings
-    player = game.add.sprite(32, game.world.height - 150, 'dude');
+    player = game.add.sprite(300, game.world.height - 150, 'dude');
 
     //  We need to enable physics on the player
     game.physics.arcade.enable(player);
@@ -138,15 +139,15 @@ function updateTimer() {
     if (cursors.left.isDown)
     {
         //  Move to the left
-        player.body.velocity.x = -150;
-
+        player.body.velocity.x = -60;
+        game.camera.x -= 1;
         player.animations.play('left');
     }
     else if (cursors.right.isDown)
     {
         //  Move to the right
-        player.body.velocity.x = 150;
-
+        player.body.velocity.x = 60;
+        game.camera.x += 1;
         player.animations.play('right');
     }
     else
