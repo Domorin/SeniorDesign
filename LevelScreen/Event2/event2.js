@@ -43,11 +43,15 @@ var timer;
 var running;
 var w = 1024, h = 768;
 
+var bugFactDisplayed = false;
+
 function create() {
     // reset variables incase of retry
     flaps = 0;
     bflaps = 0;
     face = 0;
+
+    bugFactDisplayed = false;
 
     game.world.width = 1024;
     game.world.height = 768;
@@ -197,7 +201,10 @@ function gameover() {
 	game.add.text(w/2-175, h/2-100, 'Total Flaps: ' + flaps, { fontSize: '48px', fill: '#F00' });
 	game.add.text(w/2-250, h/2-50, 'Total Bug Flaps: ' + bflaps.toFixed(0), { fontSize: '48px', fill: '#F00' });
 
-    DisplayBugFact(game, 3*game.height/4);
+    if(!bugFactDisplayed) {
+        DisplayBugFact(game, 3*game.height/4);
+        bugFactDisplayed = true;
+    }
 	
 }
 

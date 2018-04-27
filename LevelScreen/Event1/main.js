@@ -297,7 +297,7 @@ define("Event1/EventOne", ["require", "exports", "Event1/Player", "Event1/Flea",
             this.game.load.image('playerHead', 'content/playerHead.png');
             this.game.load.image('fleaHead', 'content/fleaHead.png');
             this.game.load.spritesheet('dude', 'content/dude.png', 32, 48);
-            this.game.load.spritesheet('crowd', 'content/crowd.png', 505, 181);
+            this.game.load.spritesheet('crowd', 'content/crowd.png', 126, 181);
             this.game.load.image("menu", "content/menu.png", 341, 128);
         };
         EventOne.prototype.create = function () {
@@ -394,13 +394,13 @@ define("Event1/EventOne", ["require", "exports", "Event1/Player", "Event1/Flea",
         };
         EventOne.prototype.createCrowd = function () {
             this.crowd = this.game.add.group();
-            var crowdWidth = this.game.cache.getImage("crowd").width / 2;
+            var crowdWidth = this.game.cache.getImage("crowd").width / 4;
             var crowdHeight = this.game.cache.getImage("crowd").height;
             var crowdPlacementY = this.game.world.height - this.game.cache.getImage("ground").height - crowdHeight;
             for (var currentWidth = 0; currentWidth < this.worldDimensions.x; currentWidth += crowdWidth) {
                 var curSprite = this.crowd.create(currentWidth, crowdPlacementY, 'crowd');
                 var anim = curSprite.animations.add('excited');
-                anim.play(this.randomIntFromInterval(1, 5), true, false);
+                anim.play(this.randomIntFromInterval(5, 10), true, false);
             }
         };
         EventOne.prototype.reachedEnd = function () {

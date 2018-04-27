@@ -29,7 +29,7 @@
 	game.load.spritesheet('ball', 'Event4/image/sprites/interference_ball_48x48.png', 48 ,48);
 	game.load.spritesheet('coin', 'Event4/image/sprites/coin.png', 32 ,32);
 	game.load.image('block', 'Event4/image/sprites/block.png', 5 ,5);
-	game.load.image('arrow', 'Event4/image/sprites/arrow.png',5,5);
+	game.load.image('flectrum','Event4/image/sprites/flectrum.png');
 }
 
 var player;
@@ -73,12 +73,13 @@ function create() {
 	test.physicsBodyType = Phaser.Physics.ARCADE;
 	tests = test.create(300,750,'mushroom');
 	tests.body.collideWorldBounds = true;
-	tests.body.bounce.setTo(0.9,0.9);
-	game.physics.arcade.moveToXY(tests,800,630,100);
+	tests.body.bounce.setTo(0.4,0.4);
 	
+	game.physics.arcade.moveToXY(tests,200,200);
 	//add obstacles 
 	group = game.add.physicsGroup();
 	group1 = game.add.physicsGroup();
+	group2 = game.add.physicsGroup();
 	//nondestructible
 	    for (var i = 0; i < 10; i++)
 	    {
@@ -98,6 +99,11 @@ function create() {
 	    for (var i = 0; i < 10; i++)
 	    {
 	        var c = group.create(game.rnd.between(750, 755), game.rnd.between(190,200), 'ball',15);
+	        c.body.immovable= true;
+	    }
+	    for (var i = 0; i < 1; i++)
+	    {
+	        var c = group2.create(game.rnd.between(150, 151), game.rnd.between(500,501), 'flectrum');
 	        c.body.immovable= true;
 	    }
 		
@@ -224,6 +230,22 @@ function create() {
 			c.body.immovable = true;
 		}
 		
+		//finish line 
+		for (var i =0 ; i< 1; i++)
+		{
+			var c = group1.create(game.rnd.between(205,206),game.rnd.between(590,591),'block', 1);
+			c.body.immovable = true;
+		}
+		for (var i =0 ; i< 1; i++)
+		{
+			var c = group1.create(game.rnd.between(165,166),game.rnd.between(630,631),'block', 1);
+			c.body.immovable = true;
+		}
+		for (var i =0 ; i< 1; i++)
+		{
+			var c = group1.create(game.rnd.between(155,156),game.rnd.between(660,661),'block', 1);
+			c.body.immovable = true;
+		}
 }
 
 function update() {
@@ -252,6 +274,17 @@ if (game.physics.arcade.collide(player, group1, collisionHandler3, processHandle
 	       {
 	           console.log('boom');
 	       }
+		   
+ if (game.physics.arcade.collide(player, group2, collisionHandler3, processHandler3, this))
+		   {
+		          alert('You won!');
+				  location.reload();
+		 
+		    }
+ if (game.physics.arcade.collide(test, group2, collisionHandler4, processHandler4,this))
+		    {
+		               console.log('boom');
+		    } 
   
 }
 
