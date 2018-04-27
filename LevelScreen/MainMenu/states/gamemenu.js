@@ -22,7 +22,7 @@ GameMenu.prototype = {
     game.world.width = 1024;
     game.world.height = 768;
 
-    this.titleText = game.make.text(game.world.centerX, 100, "4-H Superheroes", {
+    this.titleText = game.make.text(game.world.centerX, 100, "4-H Bug Superheroes", {
       font: 'bold 60pt TheMinion',
       fill: '#FDFFB5',
       align: 'center'

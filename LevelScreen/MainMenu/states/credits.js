@@ -16,9 +16,11 @@ Credits.prototype = {
     authorText.anchor.setTo(0.5);
     authorText.stroke = "rgba(0,0,0,0)";
     authorText.strokeThickness = 4;
+    authorText.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);
     taskText.anchor.setTo(0.5);
     taskText.stroke = "rgba(0,0,0,0)";
     taskText.strokeThickness = 4;
+    taskText.setShadow(3, 3, 'rgba(0,0,0,1)', 2);
     game.add.tween(authorText).to( { y: -300 }, 5000, Phaser.Easing.Cubic.Out, true, this.creditCount * 5000);
     game.add.tween(taskText).to( { y: -200 }, 5000, Phaser.Easing.Cubic.Out, true, this.creditCount * 5000);
     this.creditCount ++;

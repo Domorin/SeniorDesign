@@ -122,6 +122,7 @@ define("Event1/Player", ["require", "exports", "Event1/chargeMeter"], function (
             }
             else {
                 this.onGround = false;
+                this.sprite.animations.play("flying");
             }
             // Don't allow any charging if camera is moving
             if (!myScene.cameraMoving) {
@@ -133,7 +134,7 @@ define("Event1/Player", ["require", "exports", "Event1/chargeMeter"], function (
             }
         };
         Player.prototype.hitPlatform = function () {
-            console.log("hello?");
+            this.sprite.animations.play("idle");
             this.sprite.body.velocity.x = 0;
             this.onGround = true;
         };
@@ -355,7 +356,10 @@ define("Event1/EventOne", ["require", "exports", "Event1/Player", "Event1/Flea",
             this.pillars.setAll('body.immovable', true);
             this.playerSpawnPoint = new Phaser.Point(150 + this.game.width, this.game.world.height - this.PLATFORM_HEIGHT - this.game.cache.getImage('dude').height - 5);
             this.fleaSpawnPoint = new Phaser.Point(this.playerSpawnPoint.x - 50 - this.game.width, this.playerSpawnPoint.y);
-            var playerSprite = this.game.add.sprite(this.playerSpawnPoint.x, this.playerSpawnPoint.y, 'dude', 8);
+            var playerSprite = this.game.add.sprite(this.playerSpawnPoint.x, this.playerSpawnPoint.y, 'dude');
+
+            playerSprite.animations.add('idle', [4, 5], 1, true);
+            playerSprite.animations.add('flying', [6, 7, 8, 7], 10, true);
             //  We need to enable physics on the player
             this.game.physics.arcade.enable(playerSprite);
             this.player = new Player_1.Player(playerSprite);
@@ -369,6 +373,18 @@ define("Event1/EventOne", ["require", "exports", "Event1/Player", "Event1/Flea",
             this.score = this.game.add.text(this.game.width - 55, 5, "1/" + this.numberOfScreens, style);
             this.score.fixedToCamera = true;
             this.score.visible = false;
+
+            var style = { font: "bold 27px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
+
+            this.tutorial = this.game.add.text(this.game.width * 1.05, this.worldDimensions.y - this.game.height * 0.75, "Press and drag your character to beat the flea!", style);
+            this.tutorial.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);
+
+
+            var fleaFactString = "A flea can jump 200 times\nits height in inches!\n\nThink you can beat it?";
+            this.fleaFact = this.game.add.text(this.game.width * .05, this.worldDimensions.y - this.game.height * 0.85, fleaFactString, style);
+            this.fleaFact.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);
+            
+
             var style2 = { font: "bold 40px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
             this.endText = this.game.add.text(this.game.width / 2 - 40, this.game.height / 6, "You win!!");
             this.endText.fixedToCamera = true;
