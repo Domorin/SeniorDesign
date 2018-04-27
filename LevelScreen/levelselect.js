@@ -27,7 +27,7 @@ LevelSelect.prototype = {
         this.game.camera.setPosition(0, 0);
 
 		this.game.stage.backgroundColor = 0x80a0ff;
-		this.game.add.bitmapText(340, 24, 'font72', 'Select a level!', 48);
+		this.game.add.bitmapText(340, 24, 'font72', 'Select an event!', 48);
 
 		console.log(this.game.camera.x);
 		console.log("Y: " + this.game.camera.y);

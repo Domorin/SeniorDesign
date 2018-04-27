@@ -50,19 +50,19 @@ Credits.prototype = {
   },
 
   create: function () {
-    this.stage.disableVisibilityChange = true;
-    if (gameOptions.playMusic) {
-      musicPlayer.stop();
-      musicPlayer = game.add.audio('exit');
-      musicPlayer.play();
-    }
+    this.stage.disableVisibilityChange = true;    
     var bg = game.add.sprite(0, 0, 'gameover-bg');
-    this.addCredit('Music', 'Kevin Macleod');
-    this.addCredit('Developer', 'Matt McFarland');
-    this.addCredit('Lorem Ipsum', 'Mipsem Dempsum');
-    this.addCredit('Caveats', 'Keyboard Cat');
-    this.addCredit('Phaser.io', 'Powered By');
-    this.addCredit('for playing', 'Thank you');
+    this.addCredit('A Game Made for the 4-H Program By:', '');
+    this.addCredit('Cody Lutzel', '');
+    this.addCredit('Marco Wong', '');
+    this.addCredit('Rahul Jevisetty', '');
+    this.addCredit('David Qin', '');
+    this.addCredit('Smit Shah', '');
+    this.addCredit('Sunny Trivedi', '');
+    this.addCredit('4-H Advisor:');
+    this.addCredit('Pamela Gray');
+    this.addCredit('Faculty Advisor:');
+    this.addCredit('Professor Steve Demurjian');
     this.addMenuOption('<- Back', function (e) {
       game.state.start("GameMenu");
     });
