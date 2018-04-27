@@ -318,7 +318,7 @@ define("Event1/EventOne", ["require", "exports", "Event1/Player", "Event1/Flea",
             this.pillarMaxSpawnX = this.game.width * 9 / 10;
             this.pillarMinSpawnX = this.game.width / 2;
             this.pillarMaxHoleSize = 300;
-            this.pillarMinHoleSize = 100;
+            this.pillarMinHoleSize = 125;
             this.pillarMinHoleY = 150;
             this.pillarMaxHoleY = this.game.height - this.pillarMaxHoleSize - 40;
             this.numberOfScreens = 5;
@@ -354,12 +354,16 @@ define("Event1/EventOne", ["require", "exports", "Event1/Player", "Event1/Flea",
             this.pillars.enableBody = true;
             this.createPillars(this.game.cache.getImage("pillarTile").height, this.game.cache.getImage("pillarTile").width);
             this.pillars.setAll('body.immovable', true);
-            this.playerSpawnPoint = new Phaser.Point(150 + this.game.width, this.game.world.height - this.PLATFORM_HEIGHT - this.game.cache.getImage('dude').height - 5);
+            this.playerSpawnPoint = new Phaser.Point(150 + this.game.width, this.game.world.height - this.PLATFORM_HEIGHT - this.game.cache.getImage('dude').height - 20);
             this.fleaSpawnPoint = new Phaser.Point(this.playerSpawnPoint.x - 50 - this.game.width, this.playerSpawnPoint.y);
             var playerSprite = this.game.add.sprite(this.playerSpawnPoint.x, this.playerSpawnPoint.y, 'dude');
+            playerSprite.scale.x = 1.3;
+            playerSprite.scale.y = 1.3;
 
             playerSprite.animations.add('idle', [4, 5], 1, true);
             playerSprite.animations.add('flying', [6, 7, 8, 7], 10, true);
+
+            playerSprite.animations.play("idle");
             //  We need to enable physics on the player
             this.game.physics.arcade.enable(playerSprite);
             this.player = new Player_1.Player(playerSprite);
@@ -380,13 +384,13 @@ define("Event1/EventOne", ["require", "exports", "Event1/Player", "Event1/Flea",
             this.tutorial.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);
 
 
-            var fleaFactString = "A flea can jump 200 times\nits height in inches!\n\nThink you can beat it?";
+            var fleaFactString = "A flea can jump 200 times\nits own height!\n\nThink you can beat it?";
             this.fleaFact = this.game.add.text(this.game.width * .05, this.worldDimensions.y - this.game.height * 0.85, fleaFactString, style);
             this.fleaFact.setShadow(3, 3, 'rgba(0,0,0,0.5)', 2);
             
 
             var style2 = { font: "bold 40px Arial", fill: "#fff", boundsAlignH: "center", boundsAlignV: "middle" };
-            this.endText = this.game.add.text(this.game.width / 2 - 40, this.game.height / 6, "You win!!");
+            this.endText = this.game.add.text(this.game.width / 2 - 60, this.game.height / 6, "You win!!");
             this.endText.fixedToCamera = true;
             this.endText.visible = false;
             this.player.sprite.body.enable = false;
